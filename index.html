@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HVAC & Refrigeration — Control & Electrical System · Rafael Sukirno CE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&family=Exo+2:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:       #050d14;
+  --ink-2:     #0a1826;
+  --ink-3:     #0f2035;
+  --plate:     #142840;
+  --steel:     #1a3550;
+  --wire:      #224468;
+  --cool:      #00c8e8;
+  --cool-2:    #0097b8;
+  --frost:     #00e5ff;
+  --green:     #00e676;
+  --green-2:   #00b248;
+  --amber:     #ffb300;
+  --signal:    #ff6d00;
+  --danger:    #ff1744;
+  --safe:      #00e676;
+  --violet:    #7c4dff;
+  --teal:      #1de9b6;
+  --text-bright:#dff2fb;
+  --text-mid:  #7cb3cc;
+  --text-dim:  #3a6a88;
+  --line:      rgba(0,200,232,0.14);
+  --line-2:    rgba(255,255,255,0.05);
+  --glow-c:    0 0 28px rgba(0,200,232,0.38);
+  --glow-g:    0 0 24px rgba(0,230,118,0.32);
+  --f-display: 'Exo 2', sans-serif;
+  --f-body:    'Exo 2', sans-serif;
+  --f-mono:    'JetBrains Mono', monospace;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--ink); color:var(--text-bright); font-family:var(--f-body); overflow-x:hidden; }
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.018) 3px,rgba(0,0,0,0.018) 4px);
+}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:var(--cool-2);border-radius:2px;}
+
+/* ═══ SIDEBAR ═══ */
+.sidenav {
+  position:fixed; left:0; top:0; bottom:0; width:270px;
+  background:var(--ink-2); border-right:1px solid var(--line);
+  z-index:800; display:flex; flex-direction:column; overflow-y:auto;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.sidenav-logo { padding:24px 22px 16px; border-bottom:1px solid var(--line-2); }
+.sidenav-logo .ship-icon {
+  width:44px; height:44px; background:linear-gradient(135deg,#004d70,var(--cool-2));
+  border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; margin-bottom:12px;
+  box-shadow: 0 0 20px rgba(0,200,232,0.3);
+}
+.sidenav-logo .title { font-family:var(--f-display); font-weight:800; font-size:.98rem; color:var(--cool); line-height:1.25; }
+.sidenav-logo .sub { font-size:.64rem; color:var(--text-dim); margin-top:5px; font-family:var(--f-mono); letter-spacing:1px; }
+.sidenav-section { padding:14px 22px 5px; font-size:.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--text-dim); font-family:var(--f-mono); }
+.sidenav-link {
+  display:flex; align-items:center; gap:10px; padding:8px 22px;
+  text-decoration:none; color:var(--text-mid); font-size:.81rem; font-weight:500;
+  border-left:2px solid transparent; transition:all .2s; font-family:var(--f-body);
+}
+.sidenav-link .num { font-family:var(--f-mono); font-size:.64rem; color:var(--text-dim); min-width:20px; }
+.sidenav-link .ico { font-size:.95rem; }
+.sidenav-link:hover { color:var(--cool); background:rgba(0,200,232,.05); border-left-color:var(--cool); }
+.sidenav-link.active { color:var(--cool); background:rgba(0,200,232,.09); border-left-color:var(--cool); }
+.sidenav-footer { margin-top:auto; padding:16px 22px; border-top:1px solid var(--line-2); }
+.author-mini { display:flex; align-items:center; gap:10px; }
+.author-mini .ava {
+  width:36px; height:36px; border-radius:8px;
+  background:linear-gradient(135deg,var(--steel),var(--wire));
+  display:flex; align-items:center; justify-content:center; font-size:1rem;
+  border:1px solid var(--line);
+}
+.author-mini .name { font-size:.79rem; font-weight:700; color:var(--text-bright); }
+.author-mini .role { font-size:.62rem; color:var(--cool); font-family:var(--f-mono); }
+
+/* ═══ MAIN ═══ */
+.main { margin-left:270px; min-height:100vh; }
+
+/* ═══ TOPBAR ═══ */
+.topbar {
+  position:sticky; top:0; z-index:700; height:50px;
+  background:rgba(5,13,20,.94); backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  display:flex; align-items:center; padding:0 40px; gap:12px;
+}
+.topbar-trail { display:flex; align-items:center; gap:6px; font-family:var(--f-mono); font-size:.68rem; color:var(--text-dim); }
+.topbar-trail span { color:var(--cool); }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:18px; }
+.status-dot { display:flex; align-items:center; gap:6px; font-size:.68rem; font-family:var(--f-mono); color:var(--safe); }
+.status-dot::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--safe); animation:blink 2s infinite; }
+.temp-badge { font-family:var(--f-mono); font-size:.68rem; color:var(--cool); border:1px solid var(--line); padding:3px 10px; border-radius:3px; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+/* ═══ MENU BTN mobile ═══ */
+.menu-btn { display:none; background:none; border:1px solid var(--line); color:var(--text-mid); padding:6px 10px; border-radius:4px; cursor:pointer; font-size:1rem; }
+
+/* ═══ SECTIONS ═══ */
+section { padding:72px 52px; position:relative; }
+section+section { border-top:1px solid var(--line-2); }
+.s-marker { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+.s-marker .num { font-family:var(--f-display); font-size:3.6rem; font-weight:900; line-height:1; color:rgba(0,200,232,.055); letter-spacing:-3px; user-select:none; }
+.s-marker .label { display:flex; flex-direction:column; gap:4px; }
+.s-marker .tag { font-family:var(--f-mono); font-size:.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--cool); }
+.s-marker h2 { font-family:var(--f-display); font-size:clamp(1.8rem,3.2vw,2.8rem); font-weight:800; line-height:1; letter-spacing:-.5px; }
+.s-marker h2 .hl { color:var(--cool); }
+.s-desc { color:var(--text-mid); font-size:.88rem; line-height:1.85; max-width:720px; margin-bottom:36px; }
+
+/* ═══ ANIM ═══ */
+[data-anim] { opacity:0; transform:translateY(22px); transition:opacity .55s ease, transform .55s ease; }
+[data-anim].in { opacity:1; transform:none; }
+
+/* ═══ HERO ═══ */
+#home {
+  min-height:92vh; display:flex; flex-direction:column; justify-content:center;
+  padding:60px 52px; position:relative; overflow:hidden;
+}
+#home::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(0,200,232,.038) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,200,232,.038) 1px,transparent 1px),
+    linear-gradient(rgba(0,200,232,.012) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,200,232,.012) 1px,transparent 1px);
+  background-size:80px 80px,80px 80px,16px 16px,16px 16px;
+  animation:bgDrift 30s linear infinite;
+}
+@keyframes bgDrift { from{background-position:0 0,0 0,0 0,0 0;} to{background-position:0 80px,80px 0,0 16px,16px 0;} }
+#home::after {
+  content:''; position:absolute; width:800px; height:800px;
+  background:radial-gradient(circle,rgba(0,70,120,.2) 0%,transparent 70%);
+  bottom:-200px; right:-200px; pointer-events:none;
+}
+.hero-content { position:relative; z-index:2; }
+.hero-klas {
+  display:inline-flex; align-items:center; gap:8px; padding:5px 14px;
+  border:1px solid rgba(0,200,232,.3); border-radius:3px;
+  font-family:var(--f-mono); font-size:.68rem; letter-spacing:2px;
+  text-transform:uppercase; color:var(--cool); background:rgba(0,200,232,.05); margin-bottom:24px;
+}
+.hero-klas::before { content:'▶'; font-size:.58rem; animation:blinkF 1s infinite; }
+@keyframes blinkF { 0%,100%{opacity:1;} 50%{opacity:0;} }
+h1.hero-h { font-family:var(--f-display); font-size:clamp(3rem,8.5vw,6.5rem); font-weight:900; line-height:.9; letter-spacing:-3px; text-transform:uppercase; margin-bottom:22px; }
+h1.hero-h .line1 { display:block; color:var(--text-bright); }
+h1.hero-h .line2 { display:block; color:transparent; -webkit-text-stroke:1.5px var(--cool); font-style:italic; }
+h1.hero-h .line3 { display:block; background:linear-gradient(90deg,var(--cool),var(--teal),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero-sub { font-size:.95rem; color:var(--text-mid); line-height:1.8; max-width:560px; margin-bottom:40px; }
+.hero-sub strong { color:var(--text-bright); }
+.spec-tiles { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:40px; }
+.spec-tile { padding:11px 18px; background:var(--ink-2); border:1px solid var(--line); border-radius:5px; display:flex; flex-direction:column; gap:3px; transition:all .2s; }
+.spec-tile:hover { border-color:var(--cool); box-shadow:var(--glow-c); }
+.spec-tile .val { font-family:var(--f-display); font-size:1.5rem; font-weight:800; color:var(--cool); line-height:1; }
+.spec-tile .lbl { font-size:.65rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; font-family:var(--f-mono); }
+.hero-cta {
+  display:inline-flex; align-items:center; gap:10px; padding:13px 30px;
+  background:var(--cool); color:var(--ink); font-family:var(--f-display);
+  font-size:.92rem; font-weight:800; text-transform:uppercase; letter-spacing:2px;
+  text-decoration:none; border-radius:4px; transition:all .2s; overflow:hidden; position:relative;
+}
+.hero-cta::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); transform:translateX(-100%); transition:transform .5s; }
+.hero-cta:hover::before { transform:translateX(100%); }
+.hero-cta:hover { background:#1de9ff; box-shadow:0 8px 32px rgba(0,200,232,.45); transform:translateY(-2px); }
+
+/* ═══ STAT BAR ═══ */
+.stat-bar { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-bottom:36px; }
+.stat-cell { background:var(--ink-2); padding:18px 22px; transition:background .2s; }
+.stat-cell:hover { background:var(--ink-3); }
+.stat-cell .sv { font-family:var(--f-display); font-size:1.9rem; font-weight:900; line-height:1; background:linear-gradient(135deg,var(--cool),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.stat-cell .sl { font-size:.63rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); font-family:var(--f-mono); margin-top:4px; }
+
+/* ═══ DIAGRAM PANEL ═══ */
+.diagram-panel { background:var(--ink-2); border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-bottom:28px; }
+.diagram-header { padding:12px 18px; border-bottom:1px solid var(--line-2); display:flex; align-items:center; gap:10px; background:var(--ink-3); }
+.diagram-header .dot { width:8px; height:8px; border-radius:50%; }
+.d-red{background:var(--danger);} .d-amber{background:var(--amber);} .d-green{background:var(--safe);}
+.diagram-title { font-family:var(--f-mono); font-size:.7rem; color:var(--text-mid); letter-spacing:2px; text-transform:uppercase; margin-left:6px; }
+.diagram-body { padding:22px; overflow-x:auto; }
+
+/* ═══ FLOW CHAIN ═══ */
+.flow-chain { display:flex; align-items:flex-start; gap:0; overflow-x:auto; padding:4px 0 16px; flex-wrap:nowrap; }
+.chain-node { display:flex; flex-direction:column; align-items:center; min-width:105px; flex-shrink:0; }
+.chain-box { width:102px; padding:13px 7px; border:1px solid var(--line); border-radius:6px; background:var(--ink-2); text-align:center; transition:all .25s; cursor:pointer; position:relative; overflow:hidden; }
+.chain-box::before { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--cool); transform:scaleX(0); transition:transform .25s; transform-origin:left; }
+.chain-node:hover .chain-box::before { transform:scaleX(1); }
+.chain-node:hover .chain-box { border-color:var(--cool); background:var(--ink-3); box-shadow:var(--glow-c); transform:translateY(-3px); }
+.chain-box .ico { font-size:1.5rem; margin-bottom:5px; }
+.chain-box .clabel { font-size:.68rem; font-weight:700; letter-spacing:.5px; color:var(--text-bright); text-transform:uppercase; font-family:var(--f-display); line-height:1.2; }
+.chain-box .csub { font-size:.6rem; color:var(--text-dim); margin-top:3px; font-family:var(--f-mono); }
+.chain-type { font-size:.56rem; font-family:var(--f-mono); letter-spacing:2px; text-transform:uppercase; padding:2px 8px; border-radius:2px; margin-top:6px; }
+.ct-cold{background:rgba(0,200,232,.12);color:var(--cool);}
+.ct-heat{background:rgba(255,179,0,.12);color:var(--amber);}
+.ct-elec{background:rgba(0,230,118,.12);color:var(--safe);}
+.ct-ctrl{background:rgba(124,77,255,.12);color:var(--violet);}
+.ct-mech{background:rgba(255,23,68,.12);color:var(--danger);}
+.ct-out{background:rgba(29,233,182,.12);color:var(--teal);}
+.ct-sys{background:rgba(0,200,232,.18);color:var(--cool);}
+.chain-arrow { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 2px; margin-top:18px; }
+.arr-body { width:28px; height:2px; background:linear-gradient(90deg,var(--text-dim),var(--cool)); position:relative; }
+.arr-body::after { content:''; position:absolute; right:-6px; top:-4px; border:5px solid transparent; border-left:8px solid var(--cool); }
+.arr-label { font-family:var(--f-mono); font-size:.54rem; color:var(--cool); margin-top:5px; white-space:nowrap; }
+.feedback-row { margin-top:8px; padding:9px 14px; background:rgba(0,230,118,.04); border:1px dashed rgba(0,230,118,.25); border-radius:6px; display:flex; align-items:center; gap:10px; font-size:.74rem; color:var(--safe); font-family:var(--f-mono); }
+.feedback-row::before { content:'↩'; font-size:.95rem; }
+
+/* ═══ COMPONENT TABLE ═══ */
+.ctable-wrap { overflow-x:auto; border-radius:6px; border:1px solid var(--line); margin-bottom:24px; }
+.ctable { width:100%; border-collapse:collapse; font-size:.8rem; }
+.ctable thead th { background:var(--ink-3); padding:10px 14px; text-align:left; font-family:var(--f-mono); font-size:.64rem; letter-spacing:2px; text-transform:uppercase; color:var(--cool); border-bottom:1px solid var(--line); white-space:nowrap; }
+.ctable tbody tr { border-bottom:1px solid var(--line-2); transition:background .15s; }
+.ctable tbody tr:hover { background:rgba(0,200,232,.03); }
+.ctable td { padding:9px 14px; color:var(--text-mid); }
+.ctable td.para { color:var(--text-bright); font-weight:600; }
+.ctable td.code { font-family:var(--f-mono); font-size:.76rem; color:var(--amber); }
+.ctable td.ok { color:var(--safe); font-weight:600; }
+.ctable td.warn { color:var(--danger); font-weight:600; }
+
+/* ═══ GRID CARDS ═══ */
+.g-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-bottom:30px; }
+.gcard { background:var(--ink-2); border:1px solid var(--line); border-radius:8px; padding:22px 20px; transition:all .25s; position:relative; overflow:hidden; }
+.gcard::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--cool),var(--teal)); transform:scaleX(0); transition:transform .3s; transform-origin:left; }
+.gcard:hover { border-color:var(--cool); transform:translateY(-3px); box-shadow:var(--glow-c); }
+.gcard:hover::after { transform:scaleX(1); }
+.gcard-num { font-family:var(--f-mono); font-size:.6rem; letter-spacing:3px; color:var(--text-dim); text-transform:uppercase; display:block; margin-bottom:10px; }
+.gcard-ico { font-size:2rem; display:block; margin-bottom:8px; }
+.gcard h3 { font-family:var(--f-display); font-size:1rem; font-weight:800; letter-spacing:.5px; margin-bottom:8px; }
+.gcard p { font-size:.8rem; color:var(--text-mid); line-height:1.7; }
+
+/* ═══ TWO COL ═══ */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-bottom:28px; }
+@media(max-width:860px){ .two-col { grid-template-columns:1fr; } }
+
+/* ═══ FSTEPS ═══ */
+.fsteps { display:flex; flex-direction:column; gap:14px; }
+.fstep { display:flex; gap:14px; padding:14px; background:var(--ink-2); border:1px solid var(--line-2); border-radius:6px; transition:border-color .2s; }
+.fstep:hover { border-color:var(--line); }
+.fstep-num { font-family:var(--f-display); font-size:1.4rem; font-weight:900; color:rgba(0,200,232,.2); min-width:28px; line-height:1; }
+.fstep-body h4 { font-family:var(--f-display); font-size:.93rem; font-weight:800; letter-spacing:.3px; margin-bottom:5px; }
+.fstep-body p { font-size:.79rem; color:var(--text-mid); line-height:1.7; }
+
+/* ═══ VTAG ═══ */
+.vtag { display:inline-block; font-family:var(--f-mono); font-size:.6rem; letter-spacing:1.5px; text-transform:uppercase; padding:2px 9px; border-radius:2px; margin-top:6px; }
+.vtag-cold { background:rgba(0,200,232,.12); color:var(--cool); }
+.vtag-elec { background:rgba(0,230,118,.12); color:var(--safe); }
+.vtag-ctrl { background:rgba(124,77,255,.12); color:var(--violet); }
+.vtag-heat { background:rgba(255,179,0,.12); color:var(--amber); }
+.vtag-sys  { background:rgba(29,233,182,.12); color:var(--teal); }
+.vtag-warn { background:rgba(255,23,68,.12); color:var(--danger); }
+.vtag-amber{ background:rgba(255,179,0,.14); color:var(--amber); }
+
+/* ═══ INFO PANEL ═══ */
+.info-panel { background:var(--ink-2); border:1px solid var(--line-2); border-left:3px solid var(--cool); border-radius:5px; padding:14px 16px; margin-bottom:12px; }
+.info-panel h4 { font-family:var(--f-display); font-size:.88rem; font-weight:800; margin-bottom:5px; }
+.info-panel p { font-size:.79rem; color:var(--text-mid); line-height:1.7; }
+.info-panel.amber { border-left-color:var(--amber); }
+.info-panel.safe  { border-left-color:var(--safe); }
+.info-panel.violet{ border-left-color:var(--violet); }
+.info-panel.danger{ border-left-color:var(--danger); }
+.info-panel.teal  { border-left-color:var(--teal); }
+
+/* ═══ INSIGHT BOX ═══ */
+.insight-box { background:linear-gradient(135deg,rgba(0,200,232,.06),rgba(0,230,118,.04)); border:1px solid rgba(0,200,232,.2); border-radius:8px; padding:24px 28px; margin-bottom:30px; }
+.insight-box h4 { font-family:var(--f-display); font-size:.97rem; font-weight:800; color:var(--cool); margin-bottom:10px; letter-spacing:.5px; }
+.insight-box p { font-size:.84rem; color:var(--text-mid); line-height:1.8; }
+.insight-author { margin-top:12px; font-size:.73rem; color:var(--text-dim); font-family:var(--f-mono); }
+
+/* ═══ ACCORDION ═══ */
+.acc-item { background:var(--ink-2); border:1px solid var(--line-2); border-radius:6px; margin-bottom:8px; overflow:hidden; transition:border-color .2s; }
+.acc-item.open { border-color:var(--line); }
+.acc-hdr { display:flex; align-items:center; gap:12px; padding:14px 18px; cursor:pointer; user-select:none; }
+.acc-hdr:hover { background:rgba(0,200,232,.03); }
+.acc-hdr .acc-ico { font-size:1.1rem; }
+.acc-hdr h4 { font-family:var(--f-display); font-size:.93rem; font-weight:800; letter-spacing:.3px; flex:1; }
+.acc-arrow { font-family:var(--f-mono); font-size:.8rem; color:var(--cool); transition:transform .25s; }
+.acc-item.open .acc-arrow { transform:rotate(180deg); }
+.acc-body { max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s; padding:0 18px; font-size:.8rem; color:var(--text-mid); line-height:1.75; }
+.acc-item.open .acc-body { max-height:600px; padding:4px 18px 18px; }
+
+/* ═══ TABS ═══ */
+.tab-bar { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+.tab-btn { padding:7px 16px; background:var(--ink-2); border:1px solid var(--line-2); border-radius:4px; font-family:var(--f-mono); font-size:.72rem; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); cursor:pointer; transition:all .2s; }
+.tab-btn:hover { color:var(--cool); border-color:var(--line); }
+.tab-btn.active { color:var(--cool); border-color:var(--cool); background:rgba(0,200,232,.08); }
+.tab-pane { display:none; }
+.tab-pane.active { display:block; }
+
+/* ═══ REGISTER / CASE BOX ═══ */
+.reg-box { background:var(--ink-2); border:1px solid var(--line); border-radius:8px; padding:22px 26px; margin-bottom:22px; }
+.reg-box h4 { font-family:var(--f-display); font-size:1.05rem; font-weight:800; margin-bottom:10px; letter-spacing:.3px; }
+.reg-box p { font-size:.81rem; color:var(--text-mid); line-height:1.75; }
+.case-steps { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+.case-step { display:flex; gap:14px; background:var(--ink-2); border:1px solid var(--line-2); border-radius:6px; padding:14px 16px; }
+.cs-num { font-family:var(--f-display); font-weight:900; font-size:1.5rem; color:rgba(0,200,232,.18); min-width:30px; }
+.cs-body h4 { font-family:var(--f-display); font-size:.9rem; font-weight:800; margin-bottom:5px; }
+.cs-body p { font-size:.79rem; color:var(--text-mid); line-height:1.7; }
+
+/* ═══ REFRIGERATION CYCLE SVG ═══ */
+.cycle-wrap { position:relative; width:100%; max-width:680px; margin:0 auto 28px; }
+.cycle-svg { width:100%; height:auto; }
+
+/* ═══ PID SIMULATOR ═══ */
+.pid-sim { background:var(--ink-2); border:1px solid var(--line); border-radius:8px; padding:24px; margin-bottom:28px; }
+.pid-sim h4 { font-family:var(--f-display); font-size:1.05rem; font-weight:800; color:var(--cool); margin-bottom:18px; letter-spacing:.5px; }
+.pid-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+@media(max-width:640px){ .pid-sliders { grid-template-columns:1fr; } }
+.slider-group { display:flex; flex-direction:column; gap:8px; }
+.slider-group label { font-family:var(--f-mono); font-size:.68rem; color:var(--cool); letter-spacing:2px; text-transform:uppercase; display:flex; justify-content:space-between; }
+.slider-group label span { color:var(--amber); }
+input[type=range] { width:100%; -webkit-appearance:none; height:4px; border-radius:2px; background:var(--plate); outline:none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--cool); cursor:pointer; box-shadow:0 0 8px rgba(0,200,232,.5); }
+.pid-canvas-wrap { position:relative; border:1px solid var(--line-2); border-radius:6px; overflow:hidden; }
+#pidCanvas { width:100%; height:180px; display:block; background:var(--ink-3); }
+.pid-legend { display:flex; gap:16px; margin-top:10px; font-family:var(--f-mono); font-size:.64rem; }
+.pid-legend span { display:flex; align-items:center; gap:5px; color:var(--text-dim); }
+.pid-legend span::before { content:''; width:20px; height:2px; border-radius:1px; }
+.pid-legend .l-sp::before { background:var(--text-dim); }
+.pid-legend .l-pv::before { background:var(--cool); }
+.pid-legend .l-out::before { background:var(--amber); }
+
+/* ═══ GLOSSARY GRID ═══ */
+.gloss-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; margin-bottom:32px; }
+.gloss-item { background:var(--ink-2); border:1px solid var(--line-2); border-radius:6px; padding:14px 16px; transition:all .2s; cursor:pointer; }
+.gloss-item:hover { border-color:var(--line); transform:translateY(-2px); }
+.gloss-term { font-family:var(--f-display); font-size:.93rem; font-weight:800; color:var(--cool); margin-bottom:6px; letter-spacing:.3px; }
+.gloss-def { font-size:.78rem; color:var(--text-mid); line-height:1.7; }
+
+/* ═══ AUTHOR CARD ═══ */
+.author-card-big { display:flex; align-items:center; gap:22px; background:linear-gradient(135deg,var(--ink-2),var(--ink-3)); border:1px solid var(--line); border-radius:10px; padding:28px 30px; margin-top:40px; }
+.ava-big { font-size:2.8rem; width:70px; height:70px; border-radius:12px; background:linear-gradient(135deg,var(--steel),var(--wire)); display:flex; align-items:center; justify-content:center; border:2px solid var(--line); flex-shrink:0; }
+.author-bio .an { font-family:var(--f-display); font-size:1.3rem; font-weight:800; color:var(--text-bright); letter-spacing:.5px; }
+.author-bio .ar { font-size:.82rem; color:var(--cool); font-family:var(--f-mono); margin-top:3px; }
+.author-bio .ai { font-size:.78rem; color:var(--text-dim); line-height:1.7; margin-top:6px; }
+
+/* ═══ MODAL POPUP REFERENSI ═══ */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:9000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .3s; padding:20px; }
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box { background:var(--ink-2); border:1px solid var(--line); border-radius:12px; width:100%; max-width:640px; max-height:80vh; overflow-y:auto; position:relative; transform:translateY(20px); transition:transform .3s; }
+.modal-overlay.open .modal-box { transform:none; }
+.modal-head { padding:20px 24px 16px; border-bottom:1px solid var(--line-2); display:flex; align-items:flex-start; justify-content:space-between; gap:14px; position:sticky; top:0; background:var(--ink-2); z-index:2; }
+.modal-head .m-tag { font-family:var(--f-mono); font-size:.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--cool); margin-bottom:4px; }
+.modal-head h3 { font-family:var(--f-display); font-size:1.05rem; font-weight:800; }
+.modal-close { background:none; border:1px solid var(--line-2); color:var(--text-dim); border-radius:5px; width:30px; height:30px; cursor:pointer; font-size:1rem; flex-shrink:0; transition:all .2s; }
+.modal-close:hover { border-color:var(--cool); color:var(--cool); }
+.modal-body { padding:20px 24px 24px; }
+.modal-body p { font-size:.82rem; color:var(--text-mid); line-height:1.8; margin-bottom:14px; }
+.ref-list { display:flex; flex-direction:column; gap:10px; }
+.ref-item { background:var(--ink-3); border:1px solid var(--line-2); border-radius:7px; padding:12px 14px; display:flex; flex-direction:column; gap:5px; transition:border-color .2s; }
+.ref-item:hover { border-color:var(--line); }
+.ref-item .ri-src { font-family:var(--f-mono); font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+.ref-item .ri-title { font-size:.84rem; font-weight:600; color:var(--text-bright); line-height:1.4; }
+.ref-item .ri-desc { font-size:.75rem; color:var(--text-mid); line-height:1.6; }
+.ref-item a { display:inline-flex; align-items:center; gap:6px; font-family:var(--f-mono); font-size:.68rem; color:var(--cool); text-decoration:none; margin-top:4px; padding:4px 10px; border:1px solid rgba(0,200,232,.25); border-radius:3px; width:fit-content; transition:all .2s; }
+.ref-item a:hover { background:rgba(0,200,232,.08); border-color:var(--cool); }
+/* ═══ SETTING CARD ═══ */
+.setting-card { background:linear-gradient(135deg,rgba(0,200,232,.05),rgba(29,233,182,.03)); border:1px solid rgba(0,200,232,.2); border-radius:8px; padding:18px 20px; margin-bottom:14px; }
+.setting-card h5 { font-family:var(--f-display); font-size:.9rem; font-weight:800; color:var(--cool); margin-bottom:10px; letter-spacing:.3px; }
+.setting-card p { font-size:.79rem; color:var(--text-mid); line-height:1.75; }
+.setting-steps { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+.setting-step { display:flex; gap:10px; align-items:flex-start; }
+.ss-num { font-family:var(--f-mono); font-size:.7rem; background:rgba(0,200,232,.15); color:var(--cool); border-radius:3px; padding:1px 7px; min-width:26px; text-align:center; margin-top:2px; flex-shrink:0; }
+.ss-txt { font-size:.79rem; color:var(--text-mid); line-height:1.65; }
+.ss-txt strong { color:var(--text-bright); }
+/* ═══ CONTROL FLOW BLOCK ═══ */
+.ctrl-flow { display:flex; flex-direction:column; gap:0; margin:16px 0; }
+.cf-row { display:flex; align-items:center; gap:0; }
+.cf-box { background:var(--ink-3); border:1px solid var(--line); border-radius:6px; padding:10px 14px; flex:1; min-width:0; }
+.cf-box .cf-label { font-family:var(--f-mono); font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); margin-bottom:2px; }
+.cf-box .cf-val { font-size:.82rem; font-weight:600; color:var(--text-bright); }
+.cf-box .cf-sub { font-size:.72rem; color:var(--text-mid); margin-top:2px; }
+.cf-arrow-right { font-size:1.1rem; color:var(--cool); padding:0 6px; flex-shrink:0; }
+.cf-arrow-down { text-align:center; color:var(--cool); font-size:1rem; padding:4px 0; }
+/* ═══ PILL BADGE ═══ */
+.pill { display:inline-flex; align-items:center; gap:5px; font-family:var(--f-mono); font-size:.62rem; letter-spacing:1.5px; text-transform:uppercase; padding:3px 10px; border-radius:20px; border:1px solid; cursor:pointer; transition:all .2s; }
+.pill:hover { transform:translateY(-1px); }
+.pill-ref { color:var(--violet); border-color:rgba(124,77,255,.35); background:rgba(124,77,255,.08); }
+.pill-ref:hover { background:rgba(124,77,255,.18); }
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .sidenav { transform:translateX(-100%); }
+  .sidenav.open { transform:translateX(0); }
+  .main { margin-left:0; }
+  section { padding:52px 26px; }
+  #home { padding:42px 26px; }
+  .topbar { padding:0 20px; }
+  .menu-btn { display:flex; }
+  .pid-sliders { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav-logo">
+    <div class="ship-icon">❄️</div>
+    <div class="title">HVAC & Refrigeration<br>Control & Electrical System</div>
+    <div class="sub">POLPEL SURABAYA · TEKNIKA</div>
+  </div>
+
+  <div class="sidenav-section">Navigasi Modul</div>
+  <a href="#home"        class="sidenav-link active"><span class="num">00</span><span class="ico">🏠</span> Beranda</a>
+  <a href="#overview"    class="sidenav-link"><span class="num">01</span><span class="ico">🗂️</span> Gambaran Sistem</a>
+  <a href="#refrigcycle" class="sidenav-link"><span class="num">02</span><span class="ico">🔄</span> Siklus Refrigerasi</a>
+  <a href="#components"  class="sidenav-link"><span class="num">03</span><span class="ico">⚙️</span> Komponen Utama</a>
+  <a href="#electrical"  class="sidenav-link"><span class="num">04</span><span class="ico">⚡</span> Sistem Elektrikal</a>
+  <a href="#control"     class="sidenav-link"><span class="num">05</span><span class="ico">🎛️</span> Sistem Kontrol</a>
+  <a href="#control"     class="sidenav-link" style="padding-left:34px;font-size:.75rem;"><span class="num">↳</span><span class="ico">🔧</span> PID+Thermostat</a>
+  <a href="#control"     class="sidenav-link" style="padding-left:34px;font-size:.75rem;"><span class="num">↳</span><span class="ico">⚙️</span> Prosedur Setting</a>
+  <a href="#hvac"        class="sidenav-link"><span class="num">06</span><span class="ico">🌬️</span> Sistem HVAC</a>
+  <a href="#pid"         class="sidenav-link"><span class="num">07</span><span class="ico">📊</span> PID Simulator</a>
+  <a href="#protection"  class="sidenav-link"><span class="num">08</span><span class="ico">🛡️</span> Proteksi & Alarm</a>
+  <a href="#casestudy"   class="sidenav-link"><span class="num">09</span><span class="ico">📋</span> Studi Kasus</a>
+  <a href="#glossary"    class="sidenav-link"><span class="num">10</span><span class="ico">📖</span> Glosarium</a>
+
+  <div class="sidenav-footer">
+    <div class="author-mini">
+      <div class="ava">👨‍🏫</div>
+      <div>
+        <div class="name">Rafael Sukirno, CE</div>
+        <div class="role">MARINE ENG. INSTRUCTOR</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="menu-btn" onclick="document.getElementById('sidenav').classList.toggle('open')">☰</button>
+    <div class="topbar-trail">
+      Polpel Surabaya &nbsp;/&nbsp; <span>Teknika</span> &nbsp;/&nbsp; HVAC &amp; Refrigeration
+    </div>
+    <div class="topbar-right">
+      <div class="temp-badge">❄️ –18°C / 🌡️ +4°C</div>
+      <div class="status-dot">SYSTEM ONLINE</div>
+    </div>
+  </div>
+
+  <!-- ══ 00: HERO ══ -->
+  <section id="home">
+    <div class="hero-content">
+      <div class="hero-klas">D-III / D-IV TEKNIKA · SEMESTER IV · PERMESINAN KAPAL</div>
+      <h1 class="hero-h">
+        <span class="line1">HVAC &amp;</span>
+        <span class="line2">Refrigeration</span>
+        <span class="line3">Control System</span>
+      </h1>
+      <p class="hero-sub">
+        Modul pembelajaran interaktif <strong>Sistem Kontrol &amp; Elektrikal</strong> pada <strong>HVAC dan Refrigeration System</strong> di unit permesinan kapal. Mencakup siklus refrigerasi, komponen elektrikal, sistem kontrol otomatis, PID controller, dan proteksi sistem — sesuai standar <strong>IMO / SOLAS / STCW</strong>.
+      </p>
+      <div class="spec-tiles">
+        <div class="spec-tile"><div class="val">10</div><div class="lbl">Modul Materi</div></div>
+        <div class="spec-tile"><div class="val">–60°C</div><div class="lbl">Range Temp.</div></div>
+        <div class="spec-tile"><div class="val">R-404A</div><div class="lbl">Refrigerant</div></div>
+        <div class="spec-tile"><div class="val">COP 3.5</div><div class="lbl">Eff. Terbaik</div></div>
+        <div class="spec-tile"><div class="val">PID</div><div class="lbl">Kontrol Utama</div></div>
+      </div>
+      <a href="#refrigcycle" class="hero-cta">▶ Mulai Belajar</a>
+    </div>
+  </section>
+
+  <!-- ══ 01: OVERVIEW ══ -->
+  <section id="overview">
+    <div class="s-marker" data-anim>
+      <span class="num">01</span>
+      <div class="label">
+        <span class="tag">System Overview</span>
+        <h2>Gambaran <span class="hl">Sistem</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>HVAC (Heating, Ventilation, Air Conditioning) dan Refrigeration System adalah sistem permesinan vital di kapal yang bertugas menjaga kondisi termal untuk kargo, makanan, ruang akomodasi, dan peralatan. Sistem ini dikendalikan oleh rangkaian elektrikal dan kontroler otomatis.</p>
+
+    <div class="stat-bar" data-anim>
+      <div class="stat-cell"><div class="sv">–18°C</div><div class="sl">Cargo Hold (Frozen)</div></div>
+      <div class="stat-cell"><div class="sv">+4°C</div><div class="sl">Provision Cold Room</div></div>
+      <div class="stat-cell"><div class="sv">22°C</div><div class="sl">Accommodation HVAC</div></div>
+      <div class="stat-cell"><div class="sv">45°C</div><div class="sl">Engine Room Max Temp</div></div>
+      <div class="stat-cell"><div class="sv">60%</div><div class="sl">Humidity Control RH</div></div>
+      <div class="stat-cell"><div class="sv">400V</div><div class="sl">Supply Compressor</div></div>
+    </div>
+
+    <div class="g-grid" data-anim>
+      <div class="gcard"><span class="gcard-num">SYS-01</span><span class="gcard-ico">🔄</span><h3>Siklus Refrigerasi</h3><p>Siklus kompresi uap (Vapour Compression Cycle) dengan 4 proses utama: kompresi, kondensasi, ekspansi, dan evaporasi — menggunakan refrigerant sebagai fluida kerja.</p></div>
+      <div class="gcard"><span class="gcard-num">SYS-02</span><span class="gcard-ico">⚡</span><h3>Sistem Elektrikal</h3><p>Motor listrik kompresor, kontaktor, overload relay, panel distribusi daya, dan sistem starting (DOL / Star-Delta) untuk semua peralatan refrigerasi dan HVAC.</p></div>
+      <div class="gcard"><span class="gcard-num">SYS-03</span><span class="gcard-ico">🎛️</span><h3>Sistem Kontrol Otomatis</h3><p>Thermostat, pressure control, PID controller, solenoid valve control, dan defrost timer — semua bekerja otomatis untuk menjaga setpoint temperatur dan tekanan.</p></div>
+      <div class="gcard"><span class="gcard-num">SYS-04</span><span class="gcard-ico">🌬️</span><h3>HVAC Akomodasi</h3><p>Air Handling Unit (AHU), ducting system, blower motor, heating/cooling coil, dan kontrol kelembaban untuk kenyamanan kru di seluruh bagian kapal.</p></div>
+      <div class="gcard"><span class="gcard-num">SYS-05</span><span class="gcard-ico">🛡️</span><h3>Proteksi & Alarm</h3><p>High pressure cutout, low pressure cutout, high temperature alarm, motor overload protection, refrigerant leak detector, dan sistem alarm terintegrasi di IAS.</p></div>
+      <div class="gcard"><span class="gcard-num">SYS-06</span><span class="gcard-ico">🧊</span><h3>Cargo Refrigeration</h3><p>Sistem pendingin ruang muat untuk kapal reefer atau kapal dengan ketentuan SOLAS chapter II-2 — menjaga kualitas kargo beku dalam perjalanan laut panjang.</p></div>
+    </div>
+
+    <div class="insight-box" data-anim>
+      <h4>Engineering Insight — Kenapa Kontrol Penting?</h4>
+      <p>Tanpa sistem kontrol yang baik, kompresor refrigerasi bisa bekerja non-stop atau malah berhenti di waktu yang salah — menyebabkan pemborosan energi, kerusakan kompresor, atau pembusukan kargo. Sistem kontrol elektrikal adalah "otak" yang membuat refrigerasi bekerja efisien dan aman secara otomatis, bahkan saat engineer tidak sedang standby di engine room.</p>
+      <div class="insight-author">— <strong>Rafael Sukirno, CE</strong> · Marine Engineering Instructor · Politeknik Pelayaran Surabaya</div>
+    </div>
+  </section>
+
+  <!-- ══ 02: REFRIGERATION CYCLE ══ -->
+  <section id="refrigcycle">
+    <div class="s-marker" data-anim>
+      <span class="num">02</span>
+      <div class="label">
+        <span class="tag">Thermodynamics — Core Process</span>
+        <h2>Siklus <span class="hl">Refrigerasi</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Vapour Compression Refrigeration Cycle (VCRC) adalah siklus termodinamika yang digunakan hampir semua sistem refrigerasi kapal. Siklus ini memindahkan panas dari ruang dingin ke lingkungan yang lebih panas menggunakan refrigerant dan kerja kompresor.</p>
+
+    <!-- Cycle Flow -->
+    <div class="diagram-panel" data-anim>
+      <div class="diagram-header">
+        <div class="dot d-red"></div><div class="dot d-amber"></div><div class="dot d-green"></div>
+        <span class="diagram-title">Vapour Compression Refrigeration Cycle — Aliran Refrigerant</span>
+      </div>
+      <div class="diagram-body">
+        <div class="flow-chain">
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🌡️</div>
+              <div class="clabel">Evaporator</div>
+              <div class="csub">Tekanan Rendah</div>
+            </div>
+            <span class="chain-type ct-cold">EVAP</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Vapour</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">⚙️</div>
+              <div class="clabel">Compressor</div>
+              <div class="csub">Kompresi Uap</div>
+            </div>
+            <span class="chain-type ct-mech">COMPRESS</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Hot Gas</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🌊</div>
+              <div class="clabel">Condenser</div>
+              <div class="csub">Tekanan Tinggi</div>
+            </div>
+            <span class="chain-type ct-heat">COND</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Liquid</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🔩</div>
+              <div class="clabel">Expansion Valve</div>
+              <div class="csub">TEV / EEV</div>
+            </div>
+            <span class="chain-type ct-ctrl">EXPAND</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Flash</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">❄️</div>
+              <div class="clabel">Cold Room</div>
+              <div class="csub">Efek Dingin</div>
+            </div>
+            <span class="chain-type ct-out">OUTPUT</span>
+          </div>
+        </div>
+        <div class="feedback-row">Refrigerant bersirkulasi dalam loop tertutup — panas dipindahkan dari ruang dingin ke kondenser (dibuang ke air laut / udara) secara berkelanjutan</div>
+      </div>
+    </div>
+
+    <div class="two-col" data-anim>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">4 Proses Utama Siklus</h3>
+        <div class="fsteps">
+          <div class="fstep">
+            <div class="fstep-num">1</div>
+            <div class="fstep-body">
+              <h4>Evaporasi (Proses 1→2)</h4>
+              <p>Refrigerant cair bertekanan rendah menyerap panas dari ruang yang didinginkan dan berubah menjadi uap. Inilah efek pendinginan (refrigerating effect). Temperatur evaporasi ≈ –25°C untuk sistem cargo beku.</p>
+              <span class="vtag vtag-cold">Low Pressure / Low Temp</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">2</div>
+            <div class="fstep-body">
+              <h4>Kompresi (Proses 2→3)</h4>
+              <p>Kompresor mengisap uap refrigerant dari evaporator dan mengompresnya ke tekanan dan temperatur tinggi. Ini adalah proses yang membutuhkan energi (kerja kompresor / W_comp).</p>
+              <span class="vtag vtag-ctrl">Motor Driven Compressor</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">3</div>
+            <div class="fstep-body">
+              <h4>Kondensasi (Proses 3→4)</h4>
+              <p>Uap panas bertekanan tinggi didinginkan di kondenser oleh air laut atau udara, melepas panasnya dan mengembun menjadi cairan refrigerant. Panas dibuang ke lingkungan.</p>
+              <span class="vtag vtag-heat">High Pressure / Reject Heat</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">4</div>
+            <div class="fstep-body">
+              <h4>Ekspansi (Proses 4→1)</h4>
+              <p>Cairan refrigerant melewati expansion valve — tekanan dan temperatur turun drastis (flash evaporation). Thermostatic Expansion Valve (TEV) atau Electronic Expansion Valve (EEV) mengatur laju aliran refrigerant.</p>
+              <span class="vtag vtag-sys">TEV / EEV Control</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Parameter Kinerja Sistem</h3>
+        <div class="ctable-wrap">
+          <table class="ctable">
+            <thead><tr><th>Parameter</th><th>Nilai Tipikal</th><th>Keterangan</th></tr></thead>
+            <tbody>
+              <tr><td>Tekanan Suction</td><td class="code">1.5 – 3.5 bar</td><td>Sisi rendah kompresor</td></tr>
+              <tr><td>Tekanan Discharge</td><td class="code">10 – 18 bar</td><td>Sisi tinggi kompresor</td></tr>
+              <tr><td>Temp. Evaporasi (R-404A)</td><td class="code">–28 to –20°C</td><td>Sesuai setpoint ruang beku</td></tr>
+              <tr><td>Temp. Kondensasi</td><td class="code">+30 to +45°C</td><td>Tergantung temp. air laut</td></tr>
+              <tr><td>COP (Coef. of Performance)</td><td class="code para">3.0 – 4.5</td><td>Q_evap / W_comp</td></tr>
+              <tr><td>Superheat (TEV)</td><td class="code">5 – 8 K</td><td>Setpoint TEV</td></tr>
+              <tr><td>Subcooling</td><td class="code">3 – 5 K</td><td>Di bawah temperatur kondensasi</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-panel teal">
+          <h4>📐 Rumus COP</h4>
+          <p><strong>COP = Q_evap / W_comp = (h₂ – h₁) / (h₃ – h₂)</strong><br>Di mana h adalah enthalpy refrigerant pada setiap titik siklus (kJ/kg). COP yang tinggi berarti sistem lebih efisien — lebih banyak pendinginan dengan lebih sedikit energi listrik.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 03: COMPONENTS ══ -->
+  <section id="components">
+    <div class="s-marker" data-anim>
+      <span class="num">03</span>
+      <div class="label">
+        <span class="tag">Mechanical & Electrical Components</span>
+        <h2>Komponen <span class="hl">Utama</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Setiap komponen dalam sistem refrigerasi memiliki fungsi spesifik dan terhubung dengan sistem elektrikal serta kontrol. Pemahaman mendalam setiap komponen adalah kunci diagnosa kerusakan yang efektif.</p>
+
+    <div class="tab-bar" data-anim>
+      <button class="tab-btn active" onclick="switchTab('comp','mech',this)">Komponen Mekanik</button>
+      <button class="tab-btn" onclick="switchTab('comp','elec',this)">Komponen Elektrikal</button>
+      <button class="tab-btn" onclick="switchTab('comp','ctrl',this)">Instrumen Kontrol</button>
+    </div>
+
+    <div id="comp-mech" class="tab-pane active" data-anim>
+      <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr><th>Komponen</th><th>Fungsi</th><th>Tipe Umum di Kapal</th><th>Parameter Kritis</th></tr></thead>
+          <tbody>
+            <tr><td class="para">Compressor</td><td>Mengompres uap refrigerant dari tekanan rendah ke tinggi</td><td>Reciprocating / Screw</td><td class="code">1500–3000 RPM</td></tr>
+            <tr><td class="para">Condenser</td><td>Membuang panas dari refrigerant ke air laut / udara</td><td>Shell & Tube (SW Cooled)</td><td class="code">+35–45°C</td></tr>
+            <tr><td class="para">Evaporator</td><td>Menyerap panas dari ruang yang didinginkan</td><td>Plate / Forced Air</td><td class="code">–28–0°C</td></tr>
+            <tr><td class="para">Expansion Valve</td><td>Menurunkan tekanan refrigerant cair</td><td>TEV / EEV</td><td class="code">5–8 K Superheat</td></tr>
+            <tr><td class="para">Liquid Receiver</td><td>Penyimpan sementara refrigerant cair dari kondenser</td><td>Pressure Vessel</td><td class="code">Max Working Press.</td></tr>
+            <tr><td class="para">Oil Separator</td><td>Memisahkan oli kompresor dari refrigerant</td><td>Centrifugal / Mesh</td><td class="code">&gt;95% separation</td></tr>
+            <tr><td class="para">Drier / Filter</td><td>Menyerap moisture dan kotoran dalam refrigerant</td><td>Silica Gel / Molecular Sieve</td><td class="code">Dew point &lt;–50°C</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="comp-elec" class="tab-pane" data-anim>
+      <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr><th>Komponen Elektrikal</th><th>Fungsi</th><th>Spesifikasi Tipikal</th><th>Proteksi</th></tr></thead>
+          <tbody>
+            <tr><td class="para">Motor Kompresor</td><td>Menggerakkan kompresor refrigerasi</td><td class="code">15–75 kW, 400V 3Φ</td><td>Thermal, Overload</td></tr>
+            <tr><td class="para">Motor Kondenser Fan</td><td>Mengalirkan udara pendingin ke kondenser udara</td><td class="code">1.5–7.5 kW</td><td>Overload Relay</td></tr>
+            <tr><td class="para">Motor Evaporator Fan</td><td>Mensirkulasi udara dingin dalam ruang refrigerasi</td><td class="code">0.25–2.2 kW</td><td>Thermal Cutout</td></tr>
+            <tr><td class="para">Solenoid Valve</td><td>Mengontrol aliran refrigerant secara elektrikal</td><td class="code">24V DC / 220V AC</td><td>Coil Burn Protection</td></tr>
+            <tr><td class="para">Kontaktor Utama</td><td>Menghubungkan/memutus supply motor kompresor</td><td class="code">AC-3, 400V</td><td>Interlocking Circuit</td></tr>
+            <tr><td class="para">Overload Relay</td><td>Melindungi motor dari arus berlebih</td><td class="code">Adjustable Ir</td><td>Thermal Bimetal</td></tr>
+            <tr><td class="para">Star-Delta Starter</td><td>Mengurangi arus starting motor besar</td><td class="code">Reduce 1/3 starting current</td><td>Transition Timer</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="comp-ctrl" class="tab-pane" data-anim>
+      <div class="ctable-wrap">
+        <table class="ctable">
+          <thead><tr><th>Instrumen Kontrol</th><th>Fungsi</th><th>Output Signal</th><th>Setpoint Tipikal</th></tr></thead>
+          <tbody>
+            <tr><td class="para">Thermostat / Temperature Controller</td><td>Mendeteksi dan mengontrol temperatur ruang</td><td class="code">ON/OFF / 4–20mA</td><td class="code">–18°C (beku)</td></tr>
+            <tr><td class="para">Pressure Controller (LP)</td><td>Mengontrol tekanan sisi rendah sistem</td><td class="code">Contact / Analog</td><td class="code">1.5–3 bar</td></tr>
+            <tr><td class="para">Pressure Controller (HP)</td><td>High pressure cutout safety</td><td class="code">NC Contact</td><td class="code">18–22 bar cutout</td></tr>
+            <tr><td class="para">EEV Controller</td><td>Mengontrol pembukaan Electronic Expansion Valve</td><td class="code">Stepper Motor Signal</td><td class="code">Superheat 5K</td></tr>
+            <tr><td class="para">Defrost Timer / Controller</td><td>Mengatur siklus defrost evaporator secara berkala</td><td class="code">Timer Relay</td><td class="code">6–12 jam interval</td></tr>
+            <tr><td class="para">Humidity Sensor (RH)</td><td>Mengukur kelembaban untuk HVAC control</td><td class="code">4–20mA / 0–10V</td><td class="code">50–65% RH</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 04: ELECTRICAL SYSTEM ══ -->
+  <section id="electrical">
+    <div class="s-marker" data-anim>
+      <span class="num">04</span>
+      <div class="label">
+        <span class="tag">Power & Control Wiring</span>
+        <h2>Sistem <span class="hl">Elektrikal</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Sistem elektrikal refrigerasi mencakup rangkaian daya (power circuit) untuk menggerakkan motor dan rangkaian kontrol (control circuit) yang mengatur kapan dan bagaimana motor bekerja. Keduanya bekerja bersama secara terintegrasi.</p>
+
+    <!-- Electrical Flow -->
+    <div class="diagram-panel" data-anim>
+      <div class="diagram-header">
+        <div class="dot d-red"></div><div class="dot d-amber"></div><div class="dot d-green"></div>
+        <span class="diagram-title">Power Circuit — Supply ke Motor Kompresor Refrigerasi</span>
+      </div>
+      <div class="diagram-body">
+        <div class="flow-chain">
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🔌</div>
+              <div class="clabel">Main Switchboard</div>
+              <div class="csub">400V 3Φ 50Hz</div>
+            </div>
+            <span class="chain-type ct-elec">SUPPLY</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">MCCB</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🔧</div>
+              <div class="clabel">Fuse / MCCB</div>
+              <div class="csub">Short Circuit Prot.</div>
+            </div>
+            <span class="chain-type ct-elec">PROTECT</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Main</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🔁</div>
+              <div class="clabel">Contactor KM</div>
+              <div class="csub">Main Switching</div>
+            </div>
+            <span class="chain-type ct-ctrl">SWITCH</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Protect</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🌡️</div>
+              <div class="clabel">Overload Relay</div>
+              <div class="csub">FR — Motor Prot.</div>
+            </div>
+            <span class="chain-type ct-ctrl">PROTECT</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Power</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">⚡</div>
+              <div class="clabel">Motor 3-Phase</div>
+              <div class="csub">Compressor Drive</div>
+            </div>
+            <span class="chain-type ct-mech">MOTOR</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Shaft</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">⚙️</div>
+              <div class="clabel">Compressor</div>
+              <div class="csub">Refrigeration</div>
+            </div>
+            <span class="chain-type ct-cold">OUTPUT</span>
+          </div>
+        </div>
+        <div class="feedback-row">Control Circuit: Thermostat → Safety Relay → Kontaktor coil — sinyal kontrol 220V AC dari panel refrigerasi mengaktifkan kontak utama motor</div>
+      </div>
+    </div>
+
+    <div class="two-col" data-anim>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Star-Delta Starting Circuit</h3>
+        <div class="fsteps">
+          <div class="fstep">
+            <div class="fstep-num">1</div>
+            <div class="fstep-body">
+              <h4>Mengapa Star-Delta?</h4>
+              <p>Motor kompresor berdaya besar (≥11 kW) membutuhkan arus starting yang sangat besar (5–7x arus nominal). Star-Delta starter mengurangi arus starting menjadi 1/3 dari Direct On Line (DOL) — mencegah voltage dip pada bus bar kapal.</p>
+              <span class="vtag vtag-elec">Arus starting ÷ 3</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">2</div>
+            <div class="fstep-body">
+              <h4>Urutan Star Phase (Awal)</h4>
+              <p>Pada saat starting, kontaktor Star (KY) dan kontaktor Utama (KM) energize — belitan motor terhubung dalam konfigurasi Star (Y). Tegangan per belitan = 400V/√3 = 231V. Torsi starting berkurang tapi arus kecil.</p>
+              <span class="vtag vtag-ctrl">KM + KY ON</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">3</div>
+            <div class="fstep-body">
+              <h4>Transisi ke Delta</h4>
+              <p>Setelah timer (biasanya 5–8 detik), ketika motor sudah mencapai ~70% kecepatan penuh, kontaktor Star (KY) drop-off dan kontaktor Delta (KΔ) energize. Motor kini terhubung dalam konfigurasi Delta — tegangan penuh 400V per belitan.</p>
+              <span class="vtag vtag-ctrl">KM + KΔ ON</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">4</div>
+            <div class="fstep-body">
+              <h4>Interlocking KY vs KΔ</h4>
+              <p>KY dan KΔ harus dikunci secara elektrikal (interlocking) agar tidak bisa energize bersamaan — jika keduanya ON sekaligus, terjadi short circuit berat. Biasanya menggunakan normally-closed (NC) contact masing-masing kontaktor.</p>
+              <span class="vtag vtag-warn">NC Interlock Wajib!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Wiring Control Circuit</h3>
+        <div class="info-panel">
+          <h4>🔵 Sinyal START</h4>
+          <p>Push button START (NO) → mengunci diri dengan auxiliary contact KM → mengaktifkan KM (main contactor) + KY (star contactor). Timer mulai berjalan bersamaan.</p>
+        </div>
+        <div class="info-panel amber">
+          <h4>🟡 Safety Interlocks</h4>
+          <p>Sebelum kontaktor bisa energize, semua safety switch harus dalam kondisi aman: LP cutout (NC), HP cutout (NC), oil pressure switch (NC), motor thermostat (NC) — semua tersusun seri di rangkaian kontrol.</p>
+        </div>
+        <div class="info-panel safe">
+          <h4>🟢 Thermostat Control</h4>
+          <p>Thermostat ruang mengirim sinyal ON ke solenoid valve dan setelah tekanan suction naik, pressure switch mengizinkan kompresor start. Ketika setpoint tercapai, thermostat membuka — solenoid valve tutup dan kompresor berhenti otomatis.</p>
+        </div>
+        <div class="info-panel danger">
+          <h4>🔴 Fault & Trip</h4>
+          <p>Jika overload relay trip atau HP cutout terbuka, semua kontaktor drop-off. Fault indicator lamp menyala dan alarm berbunyi. Motor tidak bisa di-restart sebelum fault direset secara manual di panel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 05: CONTROL SYSTEM ══ -->
+  <section id="control">
+    <div class="s-marker" data-anim>
+      <span class="num">05</span>
+      <div class="label">
+        <span class="tag">Automatic Control Theory — Dasar hingga Aplikatif di Kapal</span>
+        <h2>Sistem <span class="hl">Kontrol Otomatis</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Dari prinsip dasar ON/OFF hingga PID control — dipelajari secara bertahap dan dikaitkan langsung dengan cara kerja thermostat, TXV/EEV, dan prosedur setting/commissioning setelah perbaikan di kapal. <button class="pill pill-ref" onclick="openModal('ref-ctrl')">📚 Referensi Materi</button></p>
+
+    <!-- LEVEL TANGGA PEMBELAJARAN -->
+    <div class="diagram-panel" data-anim>
+      <div class="diagram-header">
+        <div class="dot d-red"></div><div class="dot d-amber"></div><div class="dot d-green"></div>
+        <span class="diagram-title">Hierarki Sistem Kontrol Refrigerasi — Dasar → Aplikatif</span>
+      </div>
+      <div class="diagram-body">
+        <div class="flow-chain">
+          <div class="chain-node"><div class="chain-box"><div class="ico">🌡️</div><div class="clabel">Sensor / Transducer</div><div class="csub">Mengukur kondisi aktual</div></div><span class="chain-type ct-cold">LEVEL 1</span></div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Signal</div></div>
+          <div class="chain-node"><div class="chain-box"><div class="ico">📊</div><div class="clabel">Controller</div><div class="csub">Thermostat / PID</div></div><span class="chain-type ct-ctrl">LEVEL 2</span></div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Command</div></div>
+          <div class="chain-node"><div class="chain-box"><div class="ico">🔁</div><div class="clabel">Actuator</div><div class="csub">Sol.Valve / EEV</div></div><span class="chain-type ct-elec">LEVEL 3</span></div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Action</div></div>
+          <div class="chain-node"><div class="chain-box"><div class="ico">❄️</div><div class="clabel">Process / Plant</div><div class="csub">Cold Room / Evap.</div></div><span class="chain-type ct-out">LEVEL 4</span></div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Feedback</div></div>
+          <div class="chain-node"><div class="chain-box"><div class="ico">🔄</div><div class="clabel">Closed Loop</div><div class="csub">Kembali ke sensor</div></div><span class="chain-type ct-sys">LOOP</span></div>
+        </div>
+        <div class="feedback-row">Closed-loop control: Output proses (temperatur) selalu diukur dan dibandingkan dengan setpoint — setiap deviasi menghasilkan aksi koreksi otomatis secara terus-menerus</div>
+      </div>
+    </div>
+
+    <div class="tab-bar" data-anim>
+      <button class="tab-btn active" onclick="switchTab('ctrl','onoff',this)">① ON/OFF & Thermostat</button>
+      <button class="tab-btn" onclick="switchTab('ctrl','pid',this)">② PID Control</button>
+      <button class="tab-btn" onclick="switchTab('ctrl','pid-thermo',this)">③ PID + Thermostat Aplikasi</button>
+      <button class="tab-btn" onclick="switchTab('ctrl','setting',this)">④ Prosedur Setting</button>
+      <button class="tab-btn" onclick="switchTab('ctrl','defrost',this)">⑤ Defrost Control</button>
+    </div>
+
+    <!-- TAB 1: ON/OFF -->
+    <div id="ctrl-onoff" class="tab-pane active" data-anim>
+      <div class="two-col">
+        <div>
+          <h3 style="font-family:var(--f-display);font-size:1.05rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Dasar: ON/OFF (Bang-Bang) Control</h3>
+          <div class="info-panel">
+            <h4>🔄 Prinsip Kerja</h4>
+            <p>Thermostat mengukur temperatur ruang secara terus-menerus. Saat suhu melampaui batas atas (Setpoint + Differential/2), kompresor atau solenoid valve dinyalakan. Ketika suhu turun ke bawah batas bawah (Setpoint – Differential/2), sistem dimatikan. Output kontroler hanya dua kondisi: <strong>100% ON</strong> atau <strong>0% OFF</strong> — tidak ada nilai di antaranya.</p>
+          </div>
+          <div class="info-panel teal">
+            <h4>📐 Anatomi Thermostat ON/OFF</h4>
+            <p><strong>Setpoint (SP):</strong> Temperatur target yang diinginkan, misalnya –18°C untuk cold storage beku.<br>
+            <strong>Differential / Dead-band:</strong> Selisih suhu antara titik ON dan OFF. Contoh: differential 2°C pada SP –18°C berarti sistem ON saat –17°C dan OFF saat –19°C.<br>
+            <strong>Sensor Bulb:</strong> Kapiler berisi gas yang mengembang/menyusut sesuai suhu — menggerakkan kontak elektrikal di dalam thermostat.</p>
+          </div>
+          <div class="info-panel amber">
+            <h4>⚡ Short Cycling — Bahaya & Pencegahannya</h4>
+            <p>Differential terlalu kecil (misal 0.5°C) menyebabkan motor kompresor ON-OFF terlalu sering dalam 1 jam — disebut <strong>short cycling</strong>. Bahayanya: motor overheat, kontaktor aus cepat, kompresor gagal. Solusi: atur differential minimal 1.5–2°C, pasang <strong>anti-short-cycle timer</strong> (minimum OFF time 3–5 menit).</p>
+          </div>
+        </div>
+        <div>
+          <div class="ctable-wrap">
+            <table class="ctable">
+              <thead><tr><th>Kondisi Temp.</th><th>Thermostat</th><th>Solenoid Valve</th><th>Kompresor</th></tr></thead>
+              <tbody>
+                <tr><td>Temp &gt; SP + DB/2</td><td class="warn">CALL FOR COOLING</td><td class="ok">OPEN</td><td class="ok">ON</td></tr>
+                <tr><td>SP – DB/2 &lt; T &lt; SP + DB/2</td><td>HOLD (dead-band)</td><td class="ok">OPEN</td><td class="ok">ON (lanjut)</td></tr>
+                <tr><td>Temp &lt; SP – DB/2</td><td class="ok">SATISFIED</td><td class="warn">CLOSE</td><td class="warn">OFF</td></tr>
+                <tr><td>HP Cutout Trip</td><td>—</td><td class="warn">CLOSE</td><td class="warn">TRIP</td></tr>
+                <tr><td>LP Cutout Trip</td><td>—</td><td class="warn">CLOSE</td><td class="warn">TRIP</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="insight-box">
+            <h4>💡 Thermostat Mengontrol Solenoid Valve, Bukan Kompresor Langsung</h4>
+            <p>Di sistem multi-cold room: setiap ruang punya <strong>solenoid valve + thermostat sendiri</strong>. Thermostat memerintahkan solenoid valve membuka/menutup. Kompresor hanya berjalan selama ada minimal satu solenoid valve terbuka. Ketika SEMUA thermostat satisfied → semua solenoid menutup → LP pressure turun → LP cutout mematikan kompresor secara otomatis. Ini adalah sistem yang efisien dan aman.</p>
+          </div>
+          <div class="ctrl-flow" style="margin-top:14px;">
+            <div class="cf-row">
+              <div class="cf-box"><div class="cf-label">Thermostat Sensor</div><div class="cf-val">T = –15°C (di atas SP)</div><div class="cf-sub">Error = +3°C → butuh pendinginan</div></div>
+              <div class="cf-arrow-right">→</div>
+              <div class="cf-box"><div class="cf-label">Output Thermostat</div><div class="cf-val">Kontak CLOSE</div><div class="cf-sub">Solenoid valve coil mendapat tegangan</div></div>
+            </div>
+            <div class="cf-arrow-down">↓</div>
+            <div class="cf-row">
+              <div class="cf-box"><div class="cf-label">Solenoid Valve</div><div class="cf-val">OPEN</div><div class="cf-sub">Refrigerant mengalir ke evaporator</div></div>
+              <div class="cf-arrow-right">→</div>
+              <div class="cf-box"><div class="cf-label">LP Pressure Naik</div><div class="cf-val">LP Switch menutup</div><div class="cf-sub">Mengizinkan kompresor beroperasi</div></div>
+            </div>
+            <div class="cf-arrow-down">↓</div>
+            <div class="cf-row">
+              <div class="cf-box"><div class="cf-label">Kompresor ON</div><div class="cf-val">Pendinginan berlangsung</div><div class="cf-sub">Suhu ruang turun menuju –18°C</div></div>
+              <div class="cf-arrow-right">→</div>
+              <div class="cf-box"><div class="cf-label">T mencapai –19°C</div><div class="cf-val">Thermostat OPEN</div><div class="cf-sub">Solenoid tutup → kompresor OFF</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: PID DASAR -->
+    <div id="ctrl-pid" class="tab-pane" data-anim>
+      <h3 style="font-family:var(--f-display);font-size:1.05rem;font-weight:800;letter-spacing:.5px;margin-bottom:6px;">PID Control — Dari Teori ke Pemahaman Nyata</h3>
+      <p style="font-size:.82rem;color:var(--text-mid);line-height:1.8;margin-bottom:20px;">PID (Proportional–Integral–Derivative) adalah algoritma kontrol paling banyak digunakan di industri. Dibanding ON/OFF yang hanya "full gas atau berhenti total", PID bekerja seperti pengemudi berpengalaman — mengatur kecepatan secara proporsional dengan jarak ke tujuan, bukan sekedar injak penuh atau angkat kaki sepenuhnya.</p>
+      <div class="two-col">
+        <div>
+          <div class="fsteps">
+            <div class="fstep">
+              <div class="fstep-num">P</div>
+              <div class="fstep-body">
+                <h4>Proportional — "Seberapa jauh dari target?"</h4>
+                <p>Output kontrol <strong>sebanding</strong> dengan error saat ini: <code style="background:rgba(0,200,232,.1);padding:1px 6px;border-radius:3px;font-family:var(--f-mono);">u_P = Kp × e(t)</code><br>
+                Analogi: Semakin jauh mobil dari tikungan, semakin besar anda memutar setir. Kp besar = aksi kuat tapi mudah overshoot. Kp kecil = lambat tapi halus. <strong>Kelemahan P saja: selalu ada offset permanen</strong> (suhu tidak pernah tepat di setpoint — selalu sedikit di atas atau bawah).</p>
+                <span class="vtag vtag-ctrl">u_P = Kp × e(t)</span>
+              </div>
+            </div>
+            <div class="fstep">
+              <div class="fstep-num">I</div>
+              <div class="fstep-body">
+                <h4>Integral — "Sudah berapa lama error ini ada?"</h4>
+                <p>Menjumlahkan (mengintegrasikan) error dari waktu ke waktu: <code style="background:rgba(0,200,232,.1);padding:1px 6px;border-radius:3px;font-family:var(--f-mono);">u_I = Ki × ∫e dt</code><br>
+                Analogi: Jika mobil terus-menerus miring ke kiri, anda putar setir sedikit ke kanan lebih lama sampai mobil lurus kembali. Aksi I <strong>menghilangkan offset permanen</strong> yang ditinggalkan P. Namun Ki terlalu besar menyebabkan <strong>integral windup</strong> — sistem terus berosilasi.</p>
+                <span class="vtag vtag-ctrl">u_I = Ki × ∫e dt</span>
+              </div>
+            </div>
+            <div class="fstep">
+              <div class="fstep-num">D</div>
+              <div class="fstep-body">
+                <h4>Derivative — "Seberapa cepat error berubah?"</h4>
+                <p>Merespons laju perubahan error: <code style="background:rgba(0,200,232,.1);padding:1px 6px;border-radius:3px;font-family:var(--f-mono);">u_D = Kd × de/dt</code><br>
+                Analogi: Saat mobil mendekati tikungan dengan cepat, anda mulai mengerem sebelum tikungan tiba. D "mengantisipasi" dan memperlambat aksi kontroler saat error berkurang cepat — <strong>mencegah overshoot</strong>. Kelemahan: D sangat sensitif terhadap noise sensor.</p>
+                <span class="vtag vtag-ctrl">u_D = Kd × de/dt</span>
+              </div>
+            </div>
+          </div>
+          <div class="insight-box" style="margin-top:14px;">
+            <h4>📐 Persamaan PID Lengkap</h4>
+            <p style="font-family:var(--f-mono);font-size:.82rem;color:var(--cool);text-align:center;padding:8px 0;">u(t) = Kp·e(t) + Ki·∫e dt + Kd·(de/dt)</p>
+            <p>Di mana: <strong>u(t)</strong> = output kontroler (% bukaan valve / % output kompresor), <strong>e(t)</strong> = error = Setpoint – Process Variable (temperatur aktual). Total output adalah penjumlahan ketiga aksi — ketiganya bekerja bersamaan setiap saat.</p>
+          </div>
+        </div>
+        <div>
+          <div class="ctable-wrap">
+            <table class="ctable">
+              <thead><tr><th>Parameter</th><th>Efek Naikkan</th><th>Efek Turunkan</th><th>Gunakan saat</th></tr></thead>
+              <tbody>
+                <tr><td class="para">Kp (Gain P)</td><td class="code">Respons cepat, overshoot↑</td><td class="code">Respons lambat, offset↑</td><td>Sistem lambat merespons</td></tr>
+                <tr><td class="para">Ki (Gain I)</td><td class="code">Offset hilang cepat, osilasi↑</td><td class="code">Offset lama hilang, stabil</td><td>Ada offset permanen</td></tr>
+                <tr><td class="para">Kd (Gain D)</td><td class="code">Overshoot↓, noise sensitif</td><td class="code">Respon lebih smooth</td><td>Overshoot terlalu besar</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="info-panel teal">
+            <h4>🎯 Tuning PID — Metode Ziegler-Nichols (Sederhana)</h4>
+            <p><strong>Langkah 1:</strong> Set Ki = 0, Kd = 0. Naikkan Kp perlahan sampai sistem berosilasi konstan (Ultimate Gain, Ku).<br>
+            <strong>Langkah 2:</strong> Catat periode osilasi (Tu) dalam detik.<br>
+            <strong>Langkah 3:</strong> Hitung: <code style="font-family:var(--f-mono);font-size:.78rem;">Kp = 0.6×Ku, Ti = 0.5×Tu, Td = 0.125×Tu</code><br>
+            Untuk refrigerasi: mulai dengan Kp kecil (1–3) dan tuning bertahap agar tidak terjadi temperature overshoot ke arah positif yang merusak kargo.</p>
+          </div>
+          <div class="info-panel violet">
+            <h4>🌡️ Respons Sistem yang Baik vs Buruk</h4>
+            <p><strong>✅ Baik:</strong> Suhu mencapai setpoint dalam waktu wajar, overshoot &lt;1°C, stabil tanpa osilasi berkelanjutan.<br>
+            <strong>❌ Kp terlalu besar:</strong> Suhu turun terlalu cepat, melewati setpoint (overshoot besar), lalu naik lagi — berosilasi terus-menerus.<br>
+            <strong>❌ Ki terlalu besar:</strong> Integral windup — kompresor bekerja full terus bahkan setelah setpoint tercapai, menyebabkan suhu turun jauh di bawah setpoint.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PID + THERMOSTAT APLIKASI -->
+    <div id="ctrl-pid-thermo" class="tab-pane" data-anim>
+      <h3 style="font-family:var(--f-display);font-size:1.05rem;font-weight:800;letter-spacing:.5px;margin-bottom:6px;">PID Diterapkan pada Thermostat & TXV/EEV di Sistem Refrigerasi Kapal</h3>
+      <p style="font-size:.82rem;color:var(--text-mid);line-height:1.8;margin-bottom:20px;">Di kapal modern, thermostat bukan lagi sakelar sederhana ON/OFF — banyak sistem menggunakan <strong>electronic temperature controller berbasis PID</strong>. Berikut penjelasan di mana dan bagaimana PID bekerja dalam konteks nyata sistem refrigerasi:</p>
+
+      <div class="two-col">
+        <div>
+          <div class="setting-card">
+            <h5>🌡️ APLIKASI 1 — PID pada Electronic Temperature Controller (Ruang Pendingin)</h5>
+            <p>Controller elektronik (contoh: Dixell XR60C, Carel IR33) menggantikan thermostat bimetal lama. Di dalamnya sudah tertanam algoritma PID yang mengontrol:</p>
+            <div class="setting-steps">
+              <div class="setting-step"><div class="ss-num">→</div><div class="ss-txt"><strong>Solenoid Valve Refrigerant:</strong> Controller mengirim sinyal PWM (pulse width modulation) ke solenoid valve — valve dibuka lebih lama jika error besar, lebih pendek jika error kecil. Ini berbeda dari ON/OFF biasa karena menghasilkan kontrol yang lebih halus.</div></div>
+              <div class="setting-step"><div class="ss-num">→</div><div class="ss-txt"><strong>Aksi P:</strong> Jika suhu cold room –10°C sementara setpoint –18°C, error = 8°C → aksi P besar → valve terbuka lebih lama per siklus.</div></div>
+              <div class="setting-step"><div class="ss-num">→</div><div class="ss-txt"><strong>Aksi I:</strong> Jika suhu sudah –17°C tapi tidak turun ke –18°C (offset), aksi I terus bertambah sampai offset tereliminasi — valve dibuka sedikit lebih lama dari yang P saja perintahkan.</div></div>
+              <div class="setting-step"><div class="ss-num">→</div><div class="ss-txt"><strong>Aksi D:</strong> Jika suhu turun dengan cepat (–15°C → –17°C dalam 2 menit), D mengurangi aksi agar suhu tidak terlalu jauh melewati –18°C.</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="setting-card">
+            <h5>🔩 APLIKASI 2 — PID pada Electronic Expansion Valve (EEV) Controller</h5>
+            <p>Ini adalah penerapan PID paling kritis dalam refrigerasi modern. EEV (contoh: Carel ExV, Emerson EEV) menggantikan TXV mekanis. PID mengontrol <strong>superheat refrigerant</strong> di outlet evaporator:</p>
+            <div class="setting-steps">
+              <div class="setting-step"><div class="ss-num">SP</div><div class="ss-txt"><strong>Setpoint Superheat:</strong> Biasanya 5–8 Kelvin. Artinya: uap refrigerant di outlet evaporator harus 5–8°C lebih panas dari titik saturasi pada tekanan tersebut.</div></div>
+              <div class="setting-step"><div class="ss-num">PV</div><div class="ss-txt"><strong>Process Variable:</strong> Superheat diukur oleh sensor suhu (NTC) di outlet evaporator dikurangi suhu saturasi yang dihitung dari tekanan suction (sensor pressure).</div></div>
+              <div class="setting-step"><div class="ss-num">u</div><div class="ss-txt"><strong>Output PID:</strong> Jumlah langkah motor stepper EEV — menentukan seberapa lebar valve membuka. Superheat tinggi (>SP) → EEV terbuka lebih lebar → lebih banyak refrigerant masuk → superheat turun.</div></div>
+              <div class="setting-step"><div class="ss-num">!</div><div class="ss-txt"><strong>Perbedaan vs TXV:</strong> TXV bekerja mekanikal (bulb sensor menggerakkan needle valve secara langsung). EEV + PID bekerja digital dengan presisi 0.1 langkah stepper — lebih cepat, lebih akurat, bisa diremote monitor.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagram PID Loop -->
+      <div class="diagram-panel" style="margin-top:14px;" data-anim>
+        <div class="diagram-header">
+          <div class="dot d-red"></div><div class="dot d-amber"></div><div class="dot d-green"></div>
+          <span class="diagram-title">Closed-Loop PID — EEV Superheat Control (Aplikasi di Kapal)</span>
+        </div>
+        <div class="diagram-body">
+          <div class="flow-chain">
+            <div class="chain-node"><div class="chain-box"><div class="ico">🎯</div><div class="clabel">Setpoint SH</div><div class="csub">5 – 8 K</div></div><span class="chain-type ct-ctrl">SP</span></div>
+            <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">e(t)=SP–PV</div></div>
+            <div class="chain-node"><div class="chain-box"><div class="ico">🧠</div><div class="clabel">PID Controller</div><div class="csub">Kp·e + Ki∫e + Kd·ė</div></div><span class="chain-type ct-ctrl">PID</span></div>
+            <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Steps</div></div>
+            <div class="chain-node"><div class="chain-box"><div class="ico">🔩</div><div class="clabel">EEV Actuator</div><div class="csub">Stepper Motor</div></div><span class="chain-type ct-elec">EEV</span></div>
+            <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Flow</div></div>
+            <div class="chain-node"><div class="chain-box"><div class="ico">❄️</div><div class="clabel">Evaporator</div><div class="csub">Refrigerant Boils</div></div><span class="chain-type ct-cold">PLANT</span></div>
+            <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Measure</div></div>
+            <div class="chain-node"><div class="chain-box"><div class="ico">📡</div><div class="clabel">T + P Sensor</div><div class="csub">Superheat = T – T_sat</div></div><span class="chain-type ct-out">FEEDBACK</span></div>
+          </div>
+          <div class="feedback-row">Feedback: Superheat aktual (diukur dari sensor T dan P di outlet evaporator) dibandingkan dengan setpoint setiap 100–500ms — EEV terus menyesuaikan bukaannya</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PROSEDUR SETTING -->
+    <div id="ctrl-setting" class="tab-pane" data-anim>
+      <h3 style="font-family:var(--f-display);font-size:1.05rem;font-weight:800;letter-spacing:.5px;margin-bottom:6px;">Prosedur Setting Thermostat & TXV/EEV — Setelah Perbaikan / Penggantian Komponen</h3>
+      <p style="font-size:.82rem;color:var(--text-mid);line-height:1.8;margin-bottom:20px;">Setelah penggantian TXV, EEV, thermostat, atau setelah pekerjaan service besar (vakum, isi refrigerant), seluruh sistem kontrol harus diverifikasi dan di-setting ulang dengan prosedur yang benar. Berikut panduan step-by-step:</p>
+
+      <div class="two-col">
+        <div>
+          <div class="setting-card">
+            <h5>📋 A. Prosedur Setting Thermostat Setelah Perbaikan</h5>
+            <p>Berlaku untuk thermostat elektro-mekanis (bimetal/gas bulb) dan electronic controller (Dixell, Carel, dll.):</p>
+            <div class="setting-steps">
+              <div class="setting-step"><div class="ss-num">01</div><div class="ss-txt"><strong>Verifikasi sensor thermostat:</strong> Pastikan sensor bulb/probe terpasang di lokasi yang benar (biasanya di return air dekat evaporator, bukan di dekat pintu). Sensor yang salah posisi akan memberi pembacaan yang menyesatkan.</div></div>
+              <div class="setting-step"><div class="ss-num">02</div><div class="ss-txt"><strong>Set Setpoint (SP):</strong> Masuk ke parameter SP di controller. Contoh: untuk frozen room set –18°C, untuk chilled room set +2°C, untuk vegetable room set +8°C. Sesuaikan dengan jenis kargo dan standar SOLAS/IMO.</div></div>
+              <div class="setting-step"><div class="ss-num">03</div><div class="ss-txt"><strong>Set Differential (DF):</strong> Atur dead-band. Rekomendasi: 1.5–2.5°C untuk frozen room, 1–2°C untuk chilled room. Terlalu kecil → short cycling. Terlalu besar → fluktuasi suhu besar.</div></div>
+              <div class="setting-step"><div class="ss-num">04</div><div class="ss-txt"><strong>Set Anti-Short Cycle Timer:</strong> Atur minimum OFF time (OFt) = 3–5 menit. Ini mencegah motor kompresor restart terlalu cepat setelah berhenti — melindungi motor dan kompresor.</div></div>
+              <div class="setting-step"><div class="ss-num">05</div><div class="ss-txt"><strong>Verifikasi Alarm Setting:</strong> Set High Temp Alarm (HA) = SP + 3°C, Low Temp Alarm (LA) = SP – 5°C (hati-hati dengan freeze damage). Pastikan alarm terhubung ke buzzer/panel IAS kapal.</div></div>
+              <div class="setting-step"><div class="ss-num">06</div><div class="ss-txt"><strong>Uji fungsi:</strong> Monitor suhu selama minimal 2 jam. Catat suhu ON dan suhu OFF yang terjadi aktual. Bandingkan dengan setting yang diinginkan. Adjust jika perlu.</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="setting-card">
+            <h5>🔩 B. Prosedur Setting TXV (Thermostatic Expansion Valve) Setelah Penggantian</h5>
+            <p>TXV baru biasanya di-set dari pabrik dengan superheat 5–6 K. Namun kondisi sistem kapal mungkin berbeda — adjustment diperlukan:</p>
+            <div class="setting-steps">
+              <div class="setting-step"><div class="ss-num">01</div><div class="ss-txt"><strong>Pastikan sistem sudah beroperasi stabil minimal 15–20 menit</strong> sebelum melakukan setting. TXV tidak bisa di-set saat sistem baru start — kondisinya belum steady state.</div></div>
+              <div class="setting-step"><div class="ss-num">02</div><div class="ss-txt"><strong>Pasang manifold gauge set:</strong> Baca tekanan suction (LP) dan hitung suhu saturasi sesuai refrigerant yang digunakan (gunakan tabel P-T atau digital gauge yang sudah ada konversi otomatis).</div></div>
+              <div class="setting-step"><div class="ss-num">03</div><div class="ss-txt"><strong>Baca suhu aktual outlet evaporator</strong> menggunakan thermometer klip/contact di pipa suction setelah evaporator. <strong>Superheat = T_actual – T_saturation</strong>. Contoh: T_actual = –20°C, T_sat = –25°C → SH = 5K ✅</div></div>
+              <div class="setting-step"><div class="ss-num">04</div><div class="ss-txt"><strong>Adjust TXV adjustment stem:</strong> Putar <strong>searah jarum jam (CW)</strong> untuk <strong>menaikkan superheat</strong> (valve menutup sedikit = lebih sedikit refrigerant). Putar <strong>berlawanan (CCW)</strong> untuk <strong>menurunkan superheat</strong> (valve membuka lebih lebar). Setiap ¼ putaran = ±0.5–1 K perubahan superheat. Tunggu 10 menit setelah setiap adjustment sebelum membaca ulang.</div></div>
+              <div class="setting-step"><div class="ss-num">05</div><div class="ss-txt"><strong>Target superheat:</strong> 5–8 K. Jika SH &lt; 4 K → bahaya liquid slugging ke kompresor. Jika SH &gt; 12 K → kapasitas pendinginan turun drastis, kompresor overheat.</div></div>
+              <div class="setting-step"><div class="ss-num">06</div><div class="ss-txt"><strong>Cek Subcooling</strong> di liquid line outlet kondenser: harus 3–5 K. Subcooling kurang → flash gas di liquid line → TXV hunting tidak bisa stabil meski sudah di-setting benar.</div></div>
+            </div>
+          </div>
+
+          <div class="setting-card" style="margin-top:14px;">
+            <h5>🎛️ C. Prosedur Setting EEV Controller (Carel/Dixell) Setelah Penggantian</h5>
+            <div class="setting-steps">
+              <div class="setting-step"><div class="ss-num">01</div><div class="ss-txt"><strong>Input data refrigerant:</strong> Set tipe refrigerant di parameter controller (R404A, R134a, R410A, dll). Controller akan menggunakan tabel P-T yang sesuai untuk menghitung superheat.</div></div>
+              <div class="setting-step"><div class="ss-num">02</div><div class="ss-txt"><strong>Set Superheat Setpoint (SHS):</strong> 5–7 K untuk refrigerasi kargo, 4–6 K untuk HVAC cooling coil.</div></div>
+              <div class="setting-step"><div class="ss-num">03</div><div class="ss-txt"><strong>Set PID parameters EEV:</strong> Kp = 10–20 (agresivitas respons), Ti = 120–200 s (integral time), Td = 5–10 s. Nilai awal biasanya sudah ada di manual controller — gunakan nilai default dulu, adjust hanya jika hunting.</div></div>
+              <div class="setting-step"><div class="ss-num">04</div><div class="ss-txt"><strong>Cek dan set Opening minimum (MOP):</strong> Minimum opening position EEV (biasanya 10–15%) untuk memastikan valve tidak menutup total dan menyebabkan evaporator kering.</div></div>
+              <div class="setting-step"><div class="ss-num">05</div><div class="ss-txt"><strong>Monitor live data:</strong> Baca nilai superheat aktual dari display controller. Steady state superheat harus stabil di sekitar ±1 K dari setpoint. Jika hunting terus, naikkan Ti (perpanjang integral time) untuk menstabilkan.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-box" data-anim>
+        <h4>⚠️ Catatan Penting untuk Marine Engineer — Setting di Kapal</h4>
+        <p>Kondisi kapal sangat berbeda dari kondisi laboratorium. Suhu air laut berubah (dari 5°C di perairan utara hingga 35°C di perairan tropis) yang langsung memengaruhi tekanan kondensasi dan subcooling. Selalu baca nilai tekanan dan suhu aktual sistem sebelum membuat keputusan setting — jangan hanya berpatokan pada nilai setting lama. Setiap penggantian komponen harus diikuti dengan verifikasi seluruh parameter sistem selama minimal 2 jam operasi steady state, dan hasilnya dicatat dalam <strong>Engine Room Log Book</strong>.</p>
+        <div class="insight-author">— <strong>Rafael Sukirno, CE</strong> · Marine Engineering Instructor · Politeknik Pelayaran Surabaya</div>
+      </div>
+    </div>
+
+    <!-- TAB 5: DEFROST -->
+    <div id="ctrl-defrost" class="tab-pane" data-anim>
+      <div class="two-col">
+        <div>
+          <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Mengapa Defrost Diperlukan?</h3>
+          <p style="font-size:.82rem;color:var(--text-mid);line-height:1.8;margin-bottom:16px;">Evaporator beroperasi di bawah 0°C. Kelembaban udara yang melewati evaporator membeku di permukaan fin-nya, membentuk lapisan es (frost). Lapisan es menghalangi perpindahan panas dan aliran udara — sistem menjadi tidak efisien. Tanpa defrost terjadwal, evaporator bisa <strong>membeku total dalam 8–24 jam</strong> tergantung kelembaban udara.</p>
+          <div class="fsteps">
+            <div class="fstep"><div class="fstep-num">1</div><div class="fstep-body"><h4>Defrost Initiation — Siapa yang memulai?</h4><p>Timer defrost (setiap 6–12 jam) atau adaptive defrost controller (berdasarkan runtime kompresor) mengirim sinyal START DEFROST. Solenoid valve refrigerant ditutup lebih dahulu — sistem melakukan pump-down singkat agar refrigerant tidak terjebak di evaporator saat heater ON.</p><span class="vtag vtag-sys">Timer / Adaptive Triggered</span></div></div>
+            <div class="fstep"><div class="fstep-num">2</div><div class="fstep-body"><h4>Heater ON — Proses Melelehkan Es</h4><p>Elemen pemanas listrik (220V) di antara fin-fin evaporator dinyalakan. Fan evaporator berhenti agar panas merata. Es meleleh dan mengalir ke drip tray yang memiliki heater drip kecil agar air tidak membeku ulang di drip pan.</p><span class="vtag vtag-heat">Electric Heater 220V AC</span></div></div>
+            <div class="fstep"><div class="fstep-num">3</div><div class="fstep-body"><h4>Defrost Termination — Kapan berhenti?</h4><p>Defrost berakhir berdasarkan salah satu (yang lebih dahulu): (a) Temperatur termination sensor di fin evaporator mencapai +8 hingga +12°C — menandakan es sudah leleh sempurna, atau (b) Timer maksimum (20–45 menit) habis — safety fallback.</p><span class="vtag vtag-ctrl">Temp (+10°C) atau Timer</span></div></div>
+            <div class="fstep"><div class="fstep-num">4</div><div class="fstep-body"><h4>Drip-down → Fan → Refrigeration Restart</h4><p>Heater mati → tunggu drip-down time (3–8 menit) agar air tersisa habis mengalir sebelum fan ON (fan langsung ON saat ada air = air menyebar ke ruang). Setelah drip-down: fan ON → solenoid valve buka → refrigerasi restart normal dari kondisi suhu ruang yang sudah naik.</p><span class="vtag vtag-elec">Drip-down → Fan → Refrig.</span></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="ctable-wrap">
+            <table class="ctable">
+              <thead><tr><th>Parameter Defrost</th><th>Tipikal Kapal</th></tr></thead>
+              <tbody>
+                <tr><td>Frekuensi</td><td class="code">2–4x per 24 jam</td></tr>
+                <tr><td>Durasi Maks.</td><td class="code">20–45 menit</td></tr>
+                <tr><td>Temp. Terminasi</td><td class="code">+8 to +12°C</td></tr>
+                <tr><td>Drip-down Time</td><td class="code">3–8 menit</td></tr>
+                <tr><td>Daya Heater</td><td class="code">0.5–5 kW/m² fin</td></tr>
+                <tr><td>Metode</td><td class="code">Electric / Hot Gas</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="insight-box">
+            <h4>🔥 Hot Gas Defrost vs Electric Defrost</h4>
+            <p><strong>Electric defrost:</strong> Sederhana, elemen heater di evaporator. Konsumsi listrik tambahan signifikan. Cocok untuk cold room kecil.<br><br>
+            <strong>Hot gas defrost:</strong> Gas panas discharge kompresor dialirkan langsung ke evaporator — panas dari sistem digunakan untuk mencairkan es sendiri. Lebih efisien energi 30–50%. Butuh solenoid valve dan piping hot gas bypass khusus. Banyak digunakan di sistem cargo refrigerasi kapal besar karena efisiensi dan kecepatan defrostnya.</p>
+          </div>
+          <div class="info-panel teal">
+            <h4>💡 Defrost Controller dengan PID</h4>
+            <p>Controller defrost modern menggunakan PID untuk mengatur daya heater — tidak langsung full power tapi dipanaskan secara gradual. Ini mencegah thermal shock pada fin dan tube evaporator yang bisa menyebabkan retak atau kebocoran refrigerant. Parameter: ramp rate pemanasan, target termination temperature, batas maksimum daya.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 06: HVAC ══ -->
+  <section id="hvac">
+    <div class="s-marker" data-anim>
+      <span class="num">06</span>
+      <div class="label">
+        <span class="tag">Heating · Ventilation · Air Conditioning</span>
+        <h2>Sistem <span class="hl">HVAC</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>HVAC (Heating, Ventilation, and Air Conditioning) pada kapal berfungsi menjaga kenyamanan termal dan kualitas udara di seluruh ruang akomodasi, anjungan, dan ruangan vital lainnya. Sistem ini lebih kompleks dari refrigerasi kargo karena harus mengontrol suhu, kelembaban, dan sirkulasi udara secara bersamaan.</p>
+
+    <!-- HVAC Flow -->
+    <div class="diagram-panel" data-anim>
+      <div class="diagram-header">
+        <div class="dot d-red"></div><div class="dot d-amber"></div><div class="dot d-green"></div>
+        <span class="diagram-title">Air Handling Unit (AHU) — Aliran Udara & Proses HVAC</span>
+      </div>
+      <div class="diagram-body">
+        <div class="flow-chain">
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🌬️</div>
+              <div class="clabel">Fresh Air Intake</div>
+              <div class="csub">Outdoor Air</div>
+            </div>
+            <span class="chain-type ct-out">INTAKE</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Filter</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🪣</div>
+              <div class="clabel">Pre-filter</div>
+              <div class="csub">G4 / F7</div>
+            </div>
+            <span class="chain-type ct-ctrl">FILTER</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Cool/Heat</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">❄️</div>
+              <div class="clabel">Cooling Coil</div>
+              <div class="csub">DX / Chilled</div>
+            </div>
+            <span class="chain-type ct-cold">COOL</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Reheat</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🔥</div>
+              <div class="clabel">Heating Coil</div>
+              <div class="csub">Steam / Elec.</div>
+            </div>
+            <span class="chain-type ct-heat">HEAT</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Supply Fan</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">💨</div>
+              <div class="clabel">Supply Fan</div>
+              <div class="csub">VFD / Fixed</div>
+            </div>
+            <span class="chain-type ct-elec">FAN</span>
+          </div>
+          <div class="chain-arrow"><div class="arr-body"></div><div class="arr-label">Duct</div></div>
+          <div class="chain-node">
+            <div class="chain-box">
+              <div class="ico">🛏️</div>
+              <div class="clabel">Accommodation</div>
+              <div class="csub">22°C / 55% RH</div>
+            </div>
+            <span class="chain-type ct-out">ZONE</span>
+          </div>
+        </div>
+        <div class="feedback-row">Return Air: Udara dari ruangan kembali ke AHU — dicampur dengan fresh air dan diproses ulang (recirculation mode) untuk efisiensi energi</div>
+      </div>
+    </div>
+
+    <div class="two-col" data-anim>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Komponen AHU & Fungsi</h3>
+        <div class="acc-item open" onclick="toggleAccordion(this.querySelector('.acc-hdr'))">
+          <div class="acc-hdr"><span class="acc-ico">🌬️</span><h4>Supply Fan (Blower)</h4><span class="acc-arrow">▼</span></div>
+          <div class="acc-body">Motor-driven centrifugal fan yang menggerakkan udara melalui sistem ductwork ke seluruh zona. Dikendalikan oleh Variable Frequency Drive (VFD) untuk mengatur volume udara (CFM) sesuai kebutuhan. Saat tekanan duct meningkat (damper tertutup), VFD menurunkan kecepatan fan — hemat energi.</div>
+        </div>
+        <div class="acc-item" onclick="toggleAccordion(this.querySelector('.acc-hdr'))">
+          <div class="acc-hdr"><span class="acc-ico">❄️</span><h4>DX Cooling Coil</h4><span class="acc-arrow">▼</span></div>
+          <div class="acc-body">Direct Expansion coil — refrigerant mengalir langsung ke dalam coil untuk mendinginkan udara yang melewatinya. Alternatif: Chilled Water coil (chilled water dari chiller plant mengalir ke coil). DX lebih efisien untuk kapasitas kecil, chilled water lebih fleksibel untuk sistem besar.</div>
+        </div>
+        <div class="acc-item" onclick="toggleAccordion(this.querySelector('.acc-hdr'))">
+          <div class="acc-hdr"><span class="acc-ico">🔥</span><h4>Heating Coil</h4><span class="acc-arrow">▼</span></div>
+          <div class="acc-body">Di daerah dingin atau saat ventilasi mode (tanpa pendinginan), heating coil memanaskan udara supply. Sumber panas: steam dari boiler (steam coil) atau element listrik (electric heater coil). Di kapal, biasanya menggunakan steam heating coil.</div>
+        </div>
+        <div class="acc-item" onclick="toggleAccordion(this.querySelector('.acc-hdr'))">
+          <div class="acc-hdr"><span class="acc-ico">💧</span><h4>Dehumidification</h4><span class="acc-arrow">▼</span></div>
+          <div class="acc-body">Ketika udara didinginkan di bawah dew point-nya oleh cooling coil, moisture mengembun dan mengalir ke drain pan. Udara yang keluar dari cooling coil sudah lebih kering. Reheat coil kemudian memanaskan kembali udara ke supply temperature yang diinginkan tanpa menaikkan kembali kelembaban — inilah proses dehumidification + reheat.</div>
+        </div>
+        <div class="acc-item" onclick="toggleAccordion(this.querySelector('.acc-hdr'))">
+          <div class="acc-hdr"><span class="acc-ico">🪟</span><h4>Zone Control Damper</h4><span class="acc-arrow">▼</span></div>
+          <div class="acc-body">Variable Air Volume (VAV) damper di setiap zona ruangan mengontrol berapa banyak udara yang masuk ke zona tersebut. Room thermostat di setiap zona mengirim sinyal ke actuator damper — membuka atau menutup sesuai kebutuhan. Room controller mengintegrasikan semua signal zona secara terpusat.</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Standar Kenyamanan & Ventilasi Kapal</h3>
+        <div class="ctable-wrap">
+          <table class="ctable">
+            <thead><tr><th>Parameter</th><th>Standar / Range</th><th>Zona</th></tr></thead>
+            <tbody>
+              <tr><td>Suhu Udara</td><td class="code para">20–26°C</td><td>Akomodasi</td></tr>
+              <tr><td>Kelembaban Relatif</td><td class="code para">45–65% RH</td><td>Semua Zona</td></tr>
+              <tr><td>Fresh Air Supply</td><td class="code">Min. 15 m³/jam/orang</td><td>Occupied Spaces</td></tr>
+              <tr><td>CO₂ Max</td><td class="code">1000 ppm</td><td>Kabin / Ruang Kerja</td></tr>
+              <tr><td>Noise Level</td><td class="code">Max. 60 dB(A)</td><td>Kabin Tidur</td></tr>
+              <tr><td>Air Changes Engine Room</td><td class="code">Min. 30 kali/jam</td><td>Engine Room</td></tr>
+              <tr><td>Tekanan Positif</td><td class="code">+10 Pa min.</td><td>Accommodation</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-panel teal">
+          <h4>🌊 SOLAS Requirement</h4>
+          <p>SOLAS Chapter II-2 Reg. 20 mensyaratkan ventilasi engine room yang memadai untuk menjaga suhu kerja aman dan mencegah akumulasi gas berbahaya. Sistem HVAC yang buruk berkorelasi langsung dengan kelelahan ABK dan kecelakaan kerja di kapal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 07: PID SIMULATOR ══ -->
+  <section id="pid">
+    <div class="s-marker" data-anim>
+      <span class="num">07</span>
+      <div class="label">
+        <span class="tag">Interactive Learning Tool</span>
+        <h2>PID <span class="hl">Simulator</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Simulasikan respons kontroler PID pada sistem refrigerasi. Atur nilai Kp, Ki, dan Kd untuk melihat bagaimana sistem merespons dan mencapai setpoint temperatur. Perhatikan trade-off antara kecepatan respons, overshoot, dan stabilitas.</p>
+
+    <div class="pid-sim" data-anim>
+      <h4>🎛️ PID Temperature Controller — Cold Room Simulation (Setpoint: –18°C)</h4>
+      <div class="pid-sliders">
+        <div class="slider-group">
+          <label>Kp — Proportional <span id="kpVal">2.5</span></label>
+          <input type="range" id="kpSlider" min="0.1" max="10" step="0.1" value="2.5" oninput="updatePID()">
+        </div>
+        <div class="slider-group">
+          <label>Ki — Integral <span id="kiVal">0.3</span></label>
+          <input type="range" id="kiSlider" min="0" max="2" step="0.05" value="0.3" oninput="updatePID()">
+        </div>
+        <div class="slider-group">
+          <label>Kd — Derivative <span id="kdVal">0.5</span></label>
+          <input type="range" id="kdSlider" min="0" max="5" step="0.1" value="0.5" oninput="updatePID()">
+        </div>
+      </div>
+      <div class="pid-canvas-wrap">
+        <canvas id="pidCanvas"></canvas>
+      </div>
+      <div class="pid-legend">
+        <span class="l-sp">Setpoint (–18°C)</span>
+        <span class="l-pv">Process Variable (Temp.)</span>
+        <span class="l-out">Controller Output (%)</span>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;">
+        <button onclick="addDisturbance()" style="padding:8px 18px;background:rgba(255,179,0,.15);border:1px solid var(--amber);border-radius:4px;color:var(--amber);font-family:var(--f-mono);font-size:.72rem;cursor:pointer;letter-spacing:1px;">⚡ LOAD DISTURBANCE</button>
+        <button onclick="resetSim()" style="padding:8px 18px;background:rgba(0,200,232,.1);border:1px solid var(--cool);border-radius:4px;color:var(--cool);font-family:var(--f-mono);font-size:.72rem;cursor:pointer;letter-spacing:1px;">↺ RESET</button>
+        <div id="pidStatus" style="font-family:var(--f-mono);font-size:.72rem;color:var(--text-dim);display:flex;align-items:center;gap:8px;">Status: Simulating...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 08: PROTECTION & ALARM ══ -->
+  <section id="protection">
+    <div class="s-marker" data-anim>
+      <span class="num">08</span>
+      <div class="label">
+        <span class="tag">Safety Systems & Alarm Management</span>
+        <h2>Proteksi &amp; <span class="hl">Alarm System</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Sistem refrigerasi beroperasi dalam kondisi tekanan dan temperatur ekstrem. Sistem proteksi berlapis mencegah kerusakan peralatan, kebocoran refrigerant, dan kondisi darurat — semuanya harus direspon cepat dan tepat oleh Marine Engineer.</p>
+
+    <div class="two-col" data-anim>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Perangkat Proteksi Utama</h3>
+        <div class="fsteps">
+          <div class="fstep">
+            <div class="fstep-num">HP</div>
+            <div class="fstep-body">
+              <h4>High Pressure Cutout (HP Safety)</h4>
+              <p>Pressure switch yang memutus kompresor secara otomatis jika tekanan discharge melampaui batas maksimum (biasanya 20–24 bar untuk R-404A). Penyebab: kondenser tersumbat, sea water flow terhenti, atau refrigerant overcharge. HP cutout harus direset manual — tidak boleh auto-reset.</p>
+              <span class="vtag vtag-warn">MANUAL RESET REQUIRED</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">LP</div>
+            <div class="fstep-body">
+              <h4>Low Pressure Cutout (LP Safety)</h4>
+              <p>Memutus atau mencegah kompresor beroperasi ketika tekanan suction terlalu rendah (biasanya 0.5–1 bar untuk R-404A). Ini bisa disebabkan: refrigerant berkurang (kebocoran), solenoid valve tidak membuka, atau evaporator frozen total. LP cutout biasanya auto-reset.</p>
+              <span class="vtag vtag-cold">AUTO-RESET (biasanya)</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">OL</div>
+            <div class="fstep-body">
+              <h4>Motor Overload Relay</h4>
+              <p>Melindungi motor kompresor dari arus berlebih yang dapat menyebabkan overheat dan kerusakan belitan. Thermal bimetal relay atau electronic overload relay memantau arus 3 fasa. Trip jika arus melebihi Ir setting untuk waktu tertentu (karakteristik inverse time).</p>
+              <span class="vtag vtag-elec">MANUAL RESET</span>
+            </div>
+          </div>
+          <div class="fstep">
+            <div class="fstep-num">OP</div>
+            <div class="fstep-body">
+              <h4>Oil Pressure Differential Switch</h4>
+              <p>Memastikan oli pelumas kompresor bertekanan cukup. Mengukur selisih antara tekanan oli dan tekanan crankcase. Jika differential pressure terlalu rendah dalam 60–120 detik sejak start → kompresor trip. Mencegah kerusakan bearing akibat kurang pelumas.</p>
+              <span class="vtag vtag-warn">60–120 detik delay</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:var(--f-display);font-size:1.1rem;font-weight:800;letter-spacing:.5px;margin-bottom:14px;">Alarm Matrix — Cold Room</h3>
+        <div class="ctable-wrap">
+          <table class="ctable">
+            <thead><tr><th>Alarm</th><th>Setpoint</th><th>Aksi Otomatis</th><th>Level</th></tr></thead>
+            <tbody>
+              <tr><td>Cold Room Temp. High</td><td class="code">–15°C</td><td>Alarm buzzer</td><td class="warn">⚠ WARNING</td></tr>
+              <tr><td>Cold Room Temp. Very High</td><td class="code">–10°C</td><td>Alarm + notify bridge</td><td class="warn">🔴 ALARM</td></tr>
+              <tr><td>Compressor HP Trip</td><td class="code">22 bar</td><td>Compressor stop</td><td class="warn">🔴 TRIP</td></tr>
+              <tr><td>Compressor LP Alarm</td><td class="code">1.0 bar</td><td>Alarm only</td><td class="warn">⚠ WARNING</td></tr>
+              <tr><td>Refrigerant Leak (ppm)</td><td class="code">&gt;400 ppm</td><td>Alarm + fan on</td><td class="warn">🔴 ALARM</td></tr>
+              <tr><td>Condenser SW Temp. High</td><td class="code">45°C</td><td>Alarm</td><td class="warn">⚠ WARNING</td></tr>
+              <tr><td>Motor Overload Trip</td><td class="code">I &gt; Ir</td><td>Motor stop</td><td class="warn">🔴 TRIP</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-panel safe">
+          <h4>🌿 F-Gas Regulation & Refrigerant Safety</h4>
+          <p>Refrigerant R-134a, R-404A, R-410A adalah F-Gas (fluorinated gas) dengan GWP tinggi. Peraturan IMO dan EU mewajibkan: sistem deteksi kebocoran otomatis, logbook pengisian refrigerant, sertifikasi teknisi untuk penanganan refrigerant, dan penerapan recovery unit saat servicing — dilarang keras membuang refrigerant ke atmosfer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 09: CASE STUDY ══ -->
+  <section id="casestudy">
+    <div class="s-marker" data-anim>
+      <span class="num">09</span>
+      <div class="label">
+        <span class="tag">Control System Trouble — Real-World Problem Solving</span>
+        <h2>Studi <span class="hl">Kasus</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Kasus nyata troubleshooting sistem kontrol dan elektrikal refrigerasi di kapal — fokus pada analisa penyebab, prosedur diagnosa sistematis, tindakan perbaikan, dan commissioning ulang. <button class="pill pill-ref" onclick="openModal('ref-case')">📚 Referensi Troubleshooting</button></p>
+
+    <!-- CASE 1 -->
+    <div class="reg-box" data-anim>
+      <h4>📋 KASUS 1 — TXV Hunting: Suhu Cold Room Berfluktuasi Tidak Stabil (±5°C)</h4>
+      <p><strong>Gejala:</strong> Suhu cold room (setpoint –18°C) naik-turun antara –14°C dan –22°C dalam siklus 5–10 menit. Kompresor ON-OFF lebih sering dari biasa. Suction pressure terlihat berfluktuasi di manifold gauge. Tidak ada alarm trip. Sudah terjadi sejak TXV baru dipasang 2 hari lalu.</p>
+    </div>
+    <div class="case-steps" data-anim>
+      <div class="case-step"><div class="cs-num">01</div><div class="cs-body"><h4>Analisa: Ini TXV Hunting — Apa Penyebabnya?</h4><p>TXV hunting adalah kondisi dimana valve bergerak naik-turun tidak stabil. <strong>Penyebab utama:</strong> (a) Superheat setting terlalu rendah — valve terlalu sensitif, (b) Subcooling di liquid line tidak cukup — ada flash gas yang menyebabkan aliran refrigerant tidak stabil, (c) Kapasitas TXV terlalu besar untuk sistem (oversized), (d) Bulb sensor tidak terpasang benar di pipa suction.</p><span class="vtag vtag-warn">TXV Hunting Diagnosis</span></div></div>
+      <div class="case-step"><div class="cs-num">02</div><div class="cs-body"><h4>Cek Subcooling di Liquid Line Terlebih Dahulu</h4><p>Pasang manifold gauge dan thermometer. Ukur tekanan kondensasi → hitung T_sat (dari tabel P-T refrigerant). Ukur suhu aktual pipa liquid line outlet kondenser. <strong>Subcooling = T_sat – T_liquid</strong>. Jika subcooling &lt; 3 K → flash gas terjadi di liquid line → TXV tidak bisa bekerja stabil karena mendapat campuran cairan+gas, bukan cairan murni. Solusi: cek kondenser (sea water flow?), cek refrigerant charge (kurang?), cek liquid line filter (tersumbat?).</p><span class="vtag vtag-cold">Subcooling &lt; 3K = Flash Gas</span></div></div>
+      <div class="case-step"><div class="cs-num">03</div><div class="cs-body"><h4>Cek Posisi dan Orientasi Bulb TXV</h4><p>Bulb TXV harus terpasang: (a) di pipa suction di dekat outlet evaporator (sebelum equalizer line), (b) diposisi jam 10–12 pada pipa horizontal (atas pipa, bukan bawah — oli bisa mengumpul di bawah pipa dan mengisolasi bulb dari suhu refrigerant), (c) dibungkus insulation agar tidak terpengaruh suhu lingkungan luar. Bulb yang salah posisi → TXV merespon suhu yang salah → hunting parah.</p><span class="vtag vtag-ctrl">Bulb Position Critical</span></div></div>
+      <div class="case-step"><div class="cs-num">04</div><div class="cs-body"><h4>Setting Superheat TXV — Prosedur Adjustment</h4><p>Jika subcooling dan bulb position sudah benar tapi masih hunting: naikkan superheat setting TXV. Cari adjustment stem (biasanya tersembunyi di belakang penutup, gunakan obeng/allen key). Putar <strong>CW ¼ putaran</strong> → tunggu 10 menit → baca superheat lagi. Target 6–8 K untuk stabilitas (sedikit lebih tinggi dari minimum 5 K). Superheat lebih tinggi = valve lebih stabil tapi kapasitas sedikit berkurang — trade-off yang dapat diterima untuk menghentikan hunting.</p><span class="vtag vtag-ctrl">CW = SH Naik, CCW = SH Turun</span></div></div>
+      <div class="case-step"><div class="cs-num">05</div><div class="cs-body"><h4>Verifikasi Pasca-Adjustment — Commissioning Check</h4><p>Setelah setting: (1) Monitor suhu cold room selama 2 jam — fluktuasi harus &lt; ±1.5°C dari setpoint, (2) Monitor suction pressure — harus stabil, tidak berfluktuasi besar, (3) Catat superheat aktual setiap 30 menit selama 2 jam — harus konsisten 6–8 K, (4) Catat semua parameter dalam Engine Room Log Book: tanggal, nilai setting lama vs baru, nilai superheat terukur, nama engineer yang melakukan adjustment. Ini wajib untuk audit survey class.</p><span class="vtag vtag-elec">Log Book Recording Required</span></div></div>
+    </div>
+
+    <!-- CASE 2 -->
+    <div class="reg-box" style="margin-top:36px;" data-anim>
+      <h4>📋 KASUS 2 — Thermostat Electronic Tidak Merespons: Cold Room Tidak Dingin, Kompresor Tidak ON</h4>
+      <p><strong>Gejala:</strong> Suhu cold room sudah +10°C (setpoint –18°C). Thermostat controller menampilkan suhu yang benar di display. Namun kompresor tidak beroperasi. Solenoid valve tidak terbuka. Tidak ada alarm di panel. Sistem terlihat normal secara fisik.</p>
+    </div>
+    <div class="case-steps" data-anim>
+      <div class="case-step"><div class="cs-num">01</div><div class="cs-body"><h4>Isolasi Masalah: Kontrol atau Daya?</h4><p>Pertama, tentukan apakah masalah di rangkaian kontrol (sinyal thermostat) atau di rangkaian daya (supply motor). Cara termudah: ukur tegangan di terminal output thermostat controller dengan multimeter. Jika thermostat output <strong>ada tegangan (220V AC)</strong> tapi solenoid valve tidak membuka → masalah di solenoid valve atau rangkaian dayanya. Jika thermostat output <strong>tidak ada tegangan</strong> padahal suhu di atas setpoint → masalah di thermostat atau setting controller.</p><span class="vtag vtag-ctrl">Isolasi: Kontrol vs Daya</span></div></div>
+      <div class="case-step"><div class="cs-num">02</div><div class="cs-body"><h4>Cek Parameter Controller — Mode & Setting</h4><p>Masuk ke menu parameter controller. Cek: (a) <strong>Controller mode</strong> — apakah dalam mode MANUAL atau OFF? (b) <strong>Anti-short cycle timer</strong> — apakah timer sedang berjalan (belum expired)? Controller mungkin sedang dalam periode lockout 3–5 menit setelah terakhir kali kompresor stop, (c) <strong>Low temperature cutout</strong> — apakah suhu cold room sudah terlalu rendah dan controller mencegah kompresor ON? (sangat jarang untuk kasus ini tapi perlu dicek), (d) <strong>Alarm active?</strong> — beberapa controller memblokir output saat alarm aktif bahkan tanpa menampilkan pesan yang jelas.</p><span class="vtag vtag-ctrl">Check Controller Parameters</span></div></div>
+      <div class="case-step"><div class="cs-num">03</div><div class="cs-body"><h4>Cek Solenoid Valve — Koil Terbakar?</h4><p>Jika controller output ada tegangan tapi solenoid valve tidak membuka: (a) Ukur resistansi koil solenoid dengan multimeter (kondisi tidak bertegangan) — nilai normal biasanya 10–50 Ω tergantung tipe. Jika bacaan <strong>OL (open) atau 0 Ω</strong> → koil terbakar atau short circuit, (b) Dengarkan apakah ada "klik" saat tegangan diberikan ke solenoid — tidak ada klik → koil mati atau plunger macet, (c) Coba bypass manual solenoid valve (manual opening screw di body valve) untuk test apakah refrigerant mengalir — jika setelah bypass suction pressure naik → konfirmasi masalah di solenoid valve, bukan di refrigerant atau kompresor.</p><span class="vtag vtag-warn">Solenoid Coil Resistance Check</span></div></div>
+      <div class="case-step"><div class="cs-num">04</div><div class="cs-body"><h4>Cek Safety Interlock Chain</h4><p>Rangkaian kontrol refrigerasi tersusun seri: HP cutout → LP cutout → Oil pressure switch → Thermostat output → Solenoid coil. Jika SATU pun safety device terbuka (NC contact terbuka), seluruh rangkaian terputus dan kompresor tidak bisa ON meski thermostat demand ada. Gunakan multimeter (mode continuity/voltage) untuk memeriksa tegangan di setiap titik seri ini satu per satu dari power supply ke output. Titik dimana tegangan tiba-tiba hilang = lokasi fault.</p><span class="vtag vtag-elec">Trace Control Circuit Voltage Drop</span></div></div>
+      <div class="case-step"><div class="cs-num">05</div><div class="cs-body"><h4>Corrective Action & Re-commissioning</h4><p>Setelah ditemukan dan diperbaiki (ganti solenoid valve, reset safety, atau perbaiki wiring): (1) Reset controller, test fungsi solenoid valve manual, (2) Start sistem dan monitor: suhu cold room harus mulai turun dalam 15–20 menit, (3) Verifikasi thermostat cycling benar (ON saat suhu di atas SP+DB/2, OFF saat di bawah SP–DB/2), (4) Biarkan sistem mencapai suhu setpoint minimal 1x siklus penuh sebelum meninggalkan engine room, (5) Catat perbaikan di log book: komponen yang diganti, nomor seri, tanggal, dan nama engineer.</p><span class="vtag vtag-sys">Verify Full Cycle Operation</span></div></div>
+    </div>
+
+    <!-- CASE 3 -->
+    <div class="reg-box" style="margin-top:36px;" data-anim>
+      <h4>📋 KASUS 3 — EEV Controller Error: Superheat Tidak Stabil Setelah Penggantian Sensor</h4>
+      <p><strong>Gejala:</strong> Setelah penggantian sensor suhu NTC di outlet evaporator, EEV controller menampilkan superheat –3 K (negatif) — padahal ini tidak mungkin secara fisika (superheat negatif = refrigerant masih cair, sangat berbahaya). Kompresor masih beroperasi tapi ada alarm "Low Superheat" berkelanjutan. Suction line terasa sangat dingin dan berembun lebat sampai kompresor.</p>
+    </div>
+    <div class="case-steps" data-anim>
+      <div class="case-step"><div class="cs-num">01</div><div class="cs-body"><h4>Analisa: Superheat Negatif — Apa yang Salah?</h4><p>Superheat = T_suction_actual – T_saturation (dari tekanan suction). Superheat negatif (<0) secara fisik tidak mungkin — artinya ada <strong>kesalahan pembacaan sensor</strong>. Kemungkinan: (a) Sensor NTC baru dipasang terbalik polaritasnya (beberapa sensor NTC ada + dan –), (b) Nilai resistansi sensor tidak sesuai — NTC yang dipasang memiliki karakteristik berbeda dari yang original (10kΩ vs 5kΩ misalnya), (c) Sensor belum terpasang dengan baik di klem pipa — ada gap udara antara sensor dan pipa = pembacaan suhu tidak akurat.</p><span class="vtag vtag-warn">Sensor Error = False Reading</span></div></div>
+      <div class="case-step"><div class="cs-num">02</div><div class="cs-body"><h4>Verifikasi Sensor NTC — Cara Mengukur</h4><p>Lepas sensor dari terminal controller. Ukur resistansi sensor (dalam kondisi tidak terpasang ke controller) menggunakan multimeter Ω: (a) Celupkan sensor ke air es (0°C) — catat resistansi. Bandingkan dengan tabel NTC di manual sensor (biasanya ~10–30 kΩ pada 0°C untuk sensor 10kΩ), (b) Pegang sensor di tangan (±35°C) — resistansi harus turun dari nilai 0°C (NTC = Negative Temperature Coefficient — semakin panas, semakin rendah resistansi), (c) Jika nilai jauh berbeda dari tabel → sensor rusak atau tipe salah → ganti dengan sensor yang sesuai spesifikasi original.</p><span class="vtag vtag-ctrl">NTC Resistance Test Method</span></div></div>
+      <div class="case-step"><div class="cs-num">03</div><div class="cs-body"><h4>Verifikasi Instalasi Sensor — Posisi Kritis</h4><p>Sensor suhu untuk EEV controller harus: (a) Terpasang <strong>rapat</strong> pada pipa suction di dekat outlet evaporator — gunakan klem logam yang mengepres sensor ke pipa, (b) Dibungkus <strong>insulation</strong> agar tidak terpengaruh suhu udara sekitar — tanpa insulation, sensor membaca suhu udara, bukan suhu pipa, (c) Posisi di <strong>pipa horizontal</strong> pada jam 3 atau jam 9 (samping) — bukan di bawah pipa (oli mengumpul di situ) dan bukan di atas (uap terpisah dari cairan), (d) Beri sedikit <strong>thermal paste/compound</strong> antara sensor dan pipa untuk memastikan kontak termal yang baik.</p><span class="vtag vtag-sys">Sensor Mounting Best Practice</span></div></div>
+      <div class="case-step"><div class="cs-num">04</div><div class="cs-body"><h4>Re-commissioning EEV Controller Setelah Perbaikan Sensor</h4><p>Setelah sensor dipasang dengan benar: (1) Power-on controller dan tunggu stabilisasi ±10 menit, (2) Baca superheat di display — harus positif (3–15 K adalah range normal saat baru start), (3) Tunggu sistem steady state ±20 menit, (4) Monitor superheat live: target 5–8 K, stabil tidak berfluktuasi lebih dari ±2 K, (5) Jika EEV masih hunting (superheat naik-turun ±5 K), adjust parameter PID controller: naikkan <strong>integral time (Ti)</strong> dari default 120s menjadi 180–240s — ini memperlambat respons integral dan menstabilkan kontrol, (6) Dokumentasikan semua nilai parameter PID yang digunakan di equipment maintenance record.</p><span class="vtag vtag-elec">PID Ti Adjustment for Stability</span></div></div>
+    </div>
+
+    <!-- CASE 4 -->
+    <div class="reg-box" style="margin-top:36px;" data-anim>
+      <h4>📋 KASUS 4 — Thermostat Setting Drift: Cold Room Lebih Dingin dari Setpoint, Kargo Beku</h4>
+      <p><strong>Gejala:</strong> Cold Room Vegetables (setpoint +8°C) suhu actual –3°C. Sayuran kargo mulai membeku dan rusak. Thermostat menampilkan +9°C di display — tidak sesuai dengan suhu aktual yang diukur dengan termometer referensi. Tidak ada alarm yang aktif.</p>
+    </div>
+    <div class="case-steps" data-anim>
+      <div class="case-step"><div class="cs-num">01</div><div class="cs-body"><h4>Konfirmasi: Thermostat Membaca Salah (Sensor Drift)</h4><p>Gunakan <strong>kalibrasi silang</strong>: (a) Letakkan termometer referensi yang sudah dikalibrasi di dekat sensor thermostat, (b) Baca kedua nilai: jika thermostat +9°C sementara referensi +2°C → thermostat sensor sudah drift (+7°C error), (c) Sensor NTC/PTC mengalami drift setelah bertahun-tahun beroperasi dalam kondisi lembab — ini normal dan perlu kalibrasi periodik sesuai PMS (Planned Maintenance System) kapal.</p><span class="vtag vtag-warn">Sensor Calibration Drift</span></div></div>
+      <div class="case-step"><div class="cs-num">02</div><div class="cs-body"><h4>Emergency Action: Naikkan Setpoint Sementara</h4><p>Selagi menunggu perbaikan permanen, lakukan tindakan darurat: (a) Naikkan setpoint thermostat secara sementara sebesar nilai drift yang ditemukan. Jika drift +7°C, naikkan setpoint dari +8°C menjadi +15°C. Ini agar sistem menghentikan pendinginan pada suhu aktual yang lebih mendekati +8°C, (b) Monitor suhu ruang dengan termometer referensi setiap 30 menit, (c) Catat tindakan darurat ini di log book disertai alasan dan waktu.</p><span class="vtag vtag-amber">Temporary Setpoint Correction</span></div></div>
+      <div class="case-step"><div class="cs-num">03</div><div class="cs-body"><h4>Kalibrasi / Ganti Sensor Thermostat</h4><p>Untuk perbaikan permanen: (a) <strong>Kalibrasi offset</strong>: beberapa controller memiliki parameter "offset/calibration" (Sn/Ot). Masukkan nilai koreksi –7°C agar pembacaan sensor dikompensasi. Ini solusi cepat tanpa mengganti sensor, (b) Jika controller tidak memiliki fitur kalibrasi → ganti sensor dengan sensor baru yang sesuai spesifikasi (NTC 10kΩ, atau sesuai manual unit), (c) Setelah penggantian/kalibrasi: verifikasi dengan termometer referensi di 3 titik suhu berbeda (0°C, setpoint, dan ambient) untuk memastikan akurasi di seluruh range.</p><span class="vtag vtag-ctrl">Offset Calibration or Replace</span></div></div>
+      <div class="case-step"><div class="cs-num">04</div><div class="cs-body"><h4>Re-setting Semua Parameter Thermostat (Post-Service)</h4><p>Setelah perbaikan sensor: (1) <strong>SP (Setpoint)</strong>: kembalikan ke +8°C, (2) <strong>DF (Differential)</strong>: 2°C, (3) <strong>HA (High Alarm)</strong>: +12°C, (4) <strong>LA (Low Alarm)</strong>: +3°C — PENTING: set Low Alarm agar tidak terjadi lagi freeze damage, (5) <strong>Test alarm</strong>: naikkan setpoint sementara agar sistem memicu high alarm — verifikasi alarm berbunyi di panel kapal, (6) Set kembali setpoint ke +8°C dan monitor selama 4 jam hingga suhu stabil. Dokumentasikan semua parameter dalam equipment maintenance record dan laporkan kepada Chief Engineer.</p><span class="vtag vtag-elec">Full Parameter Verification</span></div></div>
+    </div>
+
+    <!-- CASE 5 -->
+    <div class="reg-box" style="margin-top:36px;" data-anim>
+      <h4>📋 KASUS 5 — Kontrol HVAC: Suhu Anjungan Tidak Stabil, Hunting ±8°C</h4>
+      <p><strong>Gejala:</strong> Suhu anjungan (Bridge) setpoint 22°C berfluktuasi antara 16°C dan 28°C secara periodik tiap ±15 menit. AC unit bekerja tapi suhu tidak stabil. Sebelumnya stabil, gejala mulai setelah engineer mengganti thermostat room controller yang lama.</p>
+    </div>
+    <div class="case-steps" data-anim>
+      <div class="case-step"><div class="cs-num">01</div><div class="cs-body"><h4>Analisa: Differential Thermostat Terlalu Besar atau Terlalu Kecil?</h4><p>Hunting ±8°C pada sistem HVAC biasanya disebabkan: (a) <strong>Differential terlalu kecil</strong> (misalnya 0.5°C) → kompresor ON/OFF terlalu sering, suhu tidak sempat stabil → terlihat seperti osilasi cepat, ATAU (b) <strong>Differential terlalu besar</strong> (misalnya 8°C) → sistem menunggu terlalu lama sebelum merespons → suhu berfluktuasi besar sebelum sistem bereaksi. Cek: baca parameter differential di controller baru yang baru dipasang — apakah sudah di-set atau masih default pabrik (yang mungkin berbeda dari controller lama)?</p><span class="vtag vtag-warn">Check Differential Setting First</span></div></div>
+      <div class="case-step"><div class="cs-num">02</div><div class="cs-body"><h4>Cek Mode Kontrol Controller Baru</h4><p>Controller HVAC modern (contoh: Honeywell T6 series, Siemens RDD) memiliki multiple mode: (a) <strong>ON/OFF mode</strong>: cocok untuk sistem sederhana, (b) <strong>Proportional mode</strong>: merespon secara proporsional (lebih halus), (c) <strong>PID mode</strong>: paling akurat. Pastikan controller baru di-set dalam mode yang sama dengan controller lama. Jika controller lama menggunakan ON/OFF tapi controller baru di-set mode PID dengan parameter yang tidak sesuai dengan karakteristik ruangan → hunting akan terjadi sampai parameter PID di-tuning ulang.</p><span class="vtag vtag-ctrl">Match Controller Mode</span></div></div>
+      <div class="case-step"><div class="cs-num">03</div><div class="cs-body"><h4>Setting Ulang Differential yang Tepat untuk HVAC Anjungan</h4><p>Untuk ruang anjungan kapal (volume sedang, beban panas dari peralatan navigasi): (a) Set SP = 22°C, (b) Set Differential = 2–3°C → sistem ON saat 23.5°C, OFF saat 20.5°C (untuk differential 3°C), (c) Set anti-short-cycle timer = 3 menit minimum OFF time, (d) Jika controller PID: mulai dengan Kp = 2, Ti = 300s, Td = 0 → monitor 30 menit → adjust Kp naik perlahan jika respons terlalu lambat. Anjungan memiliki beban panas yang bervariasi (siang/malam, jumlah crew) sehingga PID lebih cocok dari ON/OFF murni.</p><span class="vtag vtag-sys">Bridge HVAC Optimal Setting</span></div></div>
+      <div class="case-step"><div class="cs-num">04</div><div class="cs-body"><h4>Verifikasi & Dokumentasi Commissioning</h4><p>Setelah setting: (1) Monitor suhu anjungan dengan logger atau termometer referensi selama 4 jam (termasuk saat kapal di bawah terik matahari siang dan malam), (2) Fluktuasi suhu harus &lt; ±2°C dari setpoint saat steady state, (3) Catat nilai setpoint, differential, dan mode kontrol di equipment tag yang ditempel di unit AC, (4) Laporkan ke Chief Officer karena anjungan adalah area kritis yang berhubungan langsung dengan kemampuan navigasi crew, (5) Update Planned Maintenance System (PMS) kapal dengan tanggal kalibrasi dan nilai parameter yang digunakan.</p><span class="vtag vtag-elec">PMS Update Required</span></div></div>
+    </div>
+
+    <!-- CASE 6 -->
+    <div class="reg-box" style="margin-top:36px;" data-anim>
+      <h4>📋 KASUS 6 — Defrost Controller Fault: Cold Room Tidak Defrost, Evaporator Frozen Solid</h4>
+      <p><strong>Gejala:</strong> Cold room (–18°C) kapasitas pendinginan turun drastis — suhu tidak bisa turun di bawah –12°C meski kompresor bekerja full. Saat inspeksi, evaporator tertutup es tebal (~5 cm). Defrost timer controller menunjukkan "normal" tapi defrost tidak pernah terjadi sejak 4 hari lalu (diketahui dari log book).</p>
+    </div>
+    <div class="case-steps" data-anim>
+      <div class="case-step"><div class="cs-num">01</div><div class="cs-body"><h4>Manual Defrost Darurat Terlebih Dahulu</h4><p>Prioritas pertama: lakukan manual defrost untuk memulihkan kapasitas sistem. (a) Aktifkan manual defrost dari controller (jika ada tombol/menu manual defrost), (b) Matikan solenoid valve refrigerant ke cold room, (c) Nyalakan defrost heater secara manual (switch di panel), (d) Monitor suhu termination sensor — tunggu hingga +10°C tercapai di fin evaporator, (e) Setelah selesai: drip down 5 menit, fan ON, restore refrigerasi. Total waktu: 30–60 menit. Selama proses ini, investigasi penyebab defrost otomatis gagal berfungsi.</p><span class="vtag vtag-warn">Manual Defrost First Priority</span></div></div>
+      <div class="case-step"><div class="cs-num">02</div><div class="cs-body"><h4>Investigasi Defrost Timer Controller</h4><p>Periksa defrost timer controller: (a) <strong>Cek power supply controller</strong>: jika clock controller tidak mendapat supply listrik (misal karena breaker trip sementara), timer internal akan reset ke 00:00 dan tidak tahu kapan defrost berikutnya, (b) <strong>Cek setting waktu defrost</strong>: apakah program waktu defrost masih benar? Banyak timer controller analog kehilangan program saat power failure, (c) <strong>Cek output relay defrost</strong>: gunakan multimeter untuk memastikan relay defrost timer benar-benar mengeluarkan sinyal saat waktunya — relay mungkin sudah aus (contact terbakar).</p><span class="vtag vtag-ctrl">Timer Controller Diagnosis</span></div></div>
+      <div class="case-step"><div class="cs-num">03</div><div class="cs-body"><h4>Cek Defrost Termination Sensor dan Heater</h4><p>(a) <strong>Termination sensor</strong>: ukur resistansi sensor di fin evaporator (NTC). Jika open circuit → sensor putus → controller tidak pernah mendapat sinyal bahwa defrost selesai → mungkin defrost memang terjadi tapi terlalu singkat karena langsung timeout tanpa konfirmasi dari sensor, (b) <strong>Defrost heater</strong>: ukur resistansi elemen heater. Nilai normal tergantung daya (misal 2kW di 220V → R = V²/P = 220²/2000 = 24.2 Ω). Jika open circuit → heater putus → selama ini defrost diaktifkan tapi heater tidak berfungsi → es terus menumpuk.</p><span class="vtag vtag-heat">Heater Resistance: V²/P</span></div></div>
+      <div class="case-step"><div class="cs-num">04</div><div class="cs-body"><h4>Perbaikan & Setting Ulang Defrost Controller</h4><p>Setelah komponen yang rusak diperbaiki/diganti: (1) Set ulang jadwal defrost: untuk cold room –18°C dengan kelembaban cargo tinggi → 3–4x per 24 jam, durasi maksimum 30 menit, (2) Set termination temperature: +10°C, (3) Set drip-down time: 5 menit, (4) Lakukan test defrost manual 1 siklus penuh dan verifikasi: heater ON → fin memanas → termination sensor mencapai +10°C → heater OFF → drip-down → fan ON → refrigerasi ON, (5) Monitor 2 siklus defrost otomatis berikutnya untuk konfirmasi berfungsi normal, (6) Update PMS untuk inspeksi defrost heater dan timer setiap 3 bulan.</p><span class="vtag vtag-elec">Defrost Test & PMS Update</span></div></div>
+    </div>
+
+    <!-- Tabel Ringkasan -->
+    <div class="ctable-wrap" style="margin-top:36px;" data-anim>
+      <table class="ctable">
+        <thead><tr><th>Kasus</th><th>Gejala Utama</th><th>Komponen Kontrol Terlibat</th><th>Akar Masalah Tipikal</th><th>Prioritas</th></tr></thead>
+        <tbody>
+          <tr><td class="para">TXV Hunting</td><td>Suhu fluktuasi ±5°C</td><td>TXV, Bulb Sensor</td><td>Subcooling kurang / bulb salah posisi</td><td class="warn">SEGERA</td></tr>
+          <tr><td class="para">Kompresor Tidak ON</td><td>Sistem tidak dingin, no trip</td><td>Thermostat, Solenoid, Safety chain</td><td>Solenoid coil terbakar / safety open</td><td class="warn">SEGERA</td></tr>
+          <tr><td class="para">EEV Superheat Negatif</td><td>Alarm Low SH, suction berembun</td><td>EEV Controller, NTC Sensor</td><td>Sensor salah tipe / instalasi buruk</td><td class="warn">SEGERA</td></tr>
+          <tr><td class="para">Sensor Thermostat Drift</td><td>Suhu aktual ≠ display</td><td>Thermostat, Probe NTC</td><td>Sensor drift / kalibrasi kadaluarsa</td><td class="ok">RUTIN PMS</td></tr>
+          <tr><td class="para">HVAC Hunting</td><td>Suhu ±8°C tidak stabil</td><td>Room Controller, Thermostat</td><td>Setting differential salah / mode salah</td><td class="ok">SEGERA</td></tr>
+          <tr><td class="para">Defrost Tidak Jalan</td><td>Evaporator beku solid</td><td>Defrost Timer, Heater, Term.Sensor</td><td>Timer reset / heater putus</td><td class="warn">SEGERA</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ 10: GLOSSARY ══ -->
+  <section id="glossary">
+    <div class="s-marker" data-anim>
+      <span class="num">10</span>
+      <div class="label">
+        <span class="tag">Technical Vocabulary</span>
+        <h2>Glosarium <span class="hl">Teknik</span></h2>
+      </div>
+    </div>
+    <p class="s-desc" data-anim>Kosakata teknik HVAC & Refrigeration yang wajib dikuasai oleh Taruna Marine Engineering — didefinisikan dalam bahasa yang mudah dipahami tanpa mengurangi akurasi teknis.</p>
+
+    <div class="gloss-grid" data-anim>
+      <div class="gloss-item"><div class="gloss-term">Refrigerant</div><div class="gloss-def">Fluida kerja dalam sistem refrigerasi yang bersirkulasi dan menyerap / melepas panas melalui perubahan fasa (cair↔uap). Contoh: R-404A (cargo beku), R-134a (unit kecil), R-410A (HVAC). GWP (Global Warming Potential) harus dipertimbangkan sesuai regulasi F-Gas.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Superheat</div><div class="gloss-def">Selisih antara temperatur uap refrigerant aktual dengan temperatur saturasi pada tekanan yang sama. Superheat di outlet evaporator 5–8 K menandakan semua refrigerant sudah menguap sempurna — mencegah liquid masuk ke kompresor (liquid slugging).</div></div>
+      <div class="gloss-item"><div class="gloss-term">Subcooling</div><div class="gloss-def">Pendinginan refrigerant cair di bawah temperatur kondensasinya. Subcooling 3–5 K di outlet kondenser memastikan tidak ada vapor bubble di liquid line — mencegah flash gas di expansion valve yang mengurangi kapasitas pendinginan.</div></div>
+      <div class="gloss-item"><div class="gloss-term">COP (Coefficient of Performance)</div><div class="gloss-def">Ukuran efisiensi sistem refrigerasi: COP = Efek Pendinginan / Kerja Kompresor = Q_evap / W_comp. COP 3.5 berarti untuk setiap 1 kW listrik yang dikonsumsi kompresor, sistem menghasilkan 3.5 kW efek pendinginan. Semakin tinggi COP, semakin efisien sistem.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Thermostatic Expansion Valve (TEV)</div><div class="gloss-def">Katup ekspansi mekanis yang mengatur laju aliran refrigerant ke evaporator berdasarkan superheat uap refrigerant di outlet evaporator. Bulb sensor mendeteksi suhu dan tekanan — katup membuka lebih lebar jika superheat tinggi, menutup jika superheat rendah.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Electronic Expansion Valve (EEV)</div><div class="gloss-def">Versi modern TEV yang dikendalikan oleh motor stepper berdasarkan sinyal dari PID controller. Respons lebih cepat, lebih presisi, dan dapat dikontrol dari jarak jauh. EEV memungkinkan modulasi kapasitas yang sangat halus — meningkatkan efisiensi sistem secara keseluruhan.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Pump-down</div><div class="gloss-def">Prosedur memindahkan refrigerant dari evaporator dan sisi suction ke kondenser dan liquid receiver dengan menutup solenoid valve dan membiarkan kompresor bekerja sampai LP switch trip. Dilakukan sebelum membuka sistem untuk maintenance atau defrost manual.</div></div>
+      <div class="gloss-item"><div class="gloss-term">VFD (Variable Frequency Drive)</div><div class="gloss-def">Perangkat elektronik yang mengubah frekuensi supply listrik ke motor, sehingga kecepatan motor bisa diatur secara variabel. Pada HVAC: VFD pada fan AHU menghemat energi hingga 50% karena daya fan sebanding dengan KUBUS kecepatannya (Affinity Law).</div></div>
+      <div class="gloss-item"><div class="gloss-term">Differential Pressure Switch</div><div class="gloss-def">Switch yang mengukur selisih tekanan antara dua titik. Digunakan di: oil pressure differential (kompresor), filter DP (AHU), dan sea water flow monitoring. Merespon ketika DP melebihi atau turun di bawah setpoint — menghasilkan sinyal alarm atau trip.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Enthalpy</div><div class="gloss-def">Total kandungan energi panas dalam refrigerant (satuan: kJ/kg). Perbedaan enthalpy antar titik siklus menentukan efek pendinginan (h₁–h₄) dan kerja kompresor (h₂–h₁). Diagram P-h (Mollier diagram) adalah alat utama analisis siklus refrigerasi.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Dew Point</div><div class="gloss-def">Temperatur di mana udara mulai mengembunkan uap airnya. Pada cooling coil AHU: udara yang didinginkan di bawah dew point-nya akan kehilangan moisture (dehumidification). Dew point rendah = udara kering. Penting untuk kenyamanan dan pencegahan korosi.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Non-condensable Gas</div><div class="gloss-def">Gas (biasanya udara atau nitrogen) yang terperangkap dalam sistem refrigerasi dan tidak bisa mengembun pada kondisi operasi normal. Menyebabkan discharge pressure tinggi abnormal, mengurangi kapasitas pendinginan, dan meningkatkan suhu kerja kompresor. Harus dibuang melalui purging.</div></div>
+      <div class="gloss-item"><div class="gloss-term">ASHRAE Standard</div><div class="gloss-def">American Society of Heating, Refrigerating and Air-Conditioning Engineers — organisasi yang menerbitkan standar desain HVAC dan refrigerasi yang diakui internasional. ASHRAE 62.1 mengatur ventilasi, ASHRAE 55 mengatur kenyamanan termal — direferensikan dalam desain HVAC kapal modern.</div></div>
+      <div class="gloss-item"><div class="gloss-term">Crankcase Heater</div><div class="gloss-def">Pemanas listrik yang dipasang di bak oli (crankcase) kompresor, aktif saat kompresor mati. Fungsinya mencegah refrigerant bermigrasi dan larut ke dalam oli pelumas saat sistem dingin — menghindari kondisi "liquid slugging" saat kompresor distart kembali.</div></div>
+      <div class="gloss-item"><div class="gloss-term">GWP (Global Warming Potential)</div><div class="gloss-def">Ukuran dampak gas rumah kaca dibandingkan CO₂ dalam 100 tahun. R-404A memiliki GWP 3922 (sangat tinggi), R-134a = 1430, sedangkan refrigerant baru seperti R-1234yf memiliki GWP &lt;1. Regulasi IMO semakin ketat mendorong peralihan ke refrigerant Low-GWP di kapal baru.</div></div>
+      <div class="gloss-item"><div class="gloss-term">HVAC Zoning</div><div class="gloss-def">Pembagian kapal menjadi zona-zona HVAC terpisah (kabin officer, kabin ABK, ruang makan, ruang kontrol mesin, dll.) masing-masing dengan thermostat dan VAV damper sendiri. Zoning memungkinkan setiap area memiliki kondisi termal yang dioptimalkan secara independen dari zona lainnya.</div></div>
+    </div>
+
+    <!-- Final Author Section -->
+    <div class="author-card-big" data-anim>
+      <div class="ava-big">👨‍🏫</div>
+      <div class="author-bio">
+        <div class="an">Rafael Sukirno, CE</div>
+        <div class="ar">Marine Engineering Instructor</div>
+        <div class="ai">Politeknik Pelayaran Surabaya · Universitas Hang Tuah Surabaya<br>Mata Kuliah: HVAC &amp; Refrigeration Control System · Sistem Elektrikal Permesinan Kapal · Semester IV Teknika</div>
+      </div>
+    </div>
+
+    <p style="font-size:.68rem;color:var(--text-dim);font-family:var(--f-mono);text-align:center;margin-top:30px;padding-top:22px;border-top:1px solid var(--line-2);">
+      © 2025 Rafael Sukirno, CE · Politeknik Pelayaran Surabaya · Universitas Hang Tuah Surabaya<br>
+      Materi Pembelajaran Vokasi Maritim · HVAC &amp; Refrigeration Control &amp; Electrical System · Semester IV Teknika
+    </p>
+  </section>
+
+</div><!-- /main -->
+
+<!-- ══ MODAL: REFERENSI KONTROL ══ -->
+<div class="modal-overlay" id="modal-ref-ctrl" onclick="closeModalOutside(event,'modal-ref-ctrl')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div class="m-tag">📚 Referensi Ilmiah & Teknis</div>
+        <h3>Sistem Kontrol Refrigerasi — Sumber Belajar</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-ref-ctrl')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Sumber referensi internasional dan nasional yang membahas sistem kontrol refrigerasi dan HVAC, dari level teori hingga aplikasi industri maritim.</p>
+      <div class="ref-list">
+        <div class="ref-item">
+          <div class="ri-src">🎓 MIT OpenCourseWare — USA</div>
+          <div class="ri-title">Feedback Control Systems (2.004) — Massachusetts Institute of Technology</div>
+          <div class="ri-desc">Materi kuliah lengkap sistem kontrol feedback termasuk PID design, stability analysis, dan Bode plots. Tersedia gratis, level undergraduate engineering.</div>
+          <a href="https://ocw.mit.edu/courses/2-004-dynamics-and-control-ii-spring-2008/" target="_blank" rel="noopener">🔗 Buka di MIT OCW →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🎓 ASHRAE — American Society of Heating, Refrigerating and A/C Engineers</div>
+          <div class="ri-title">ASHRAE Handbook — Refrigeration (Chapter: Automatic Control)</div>
+          <div class="ri-desc">Standar industri global untuk desain dan kontrol sistem refrigerasi dan HVAC. Mencakup thermostat, expansion valve, defrost control, dan PID tuning untuk aplikasi refrigerasi.</div>
+          <a href="https://www.ashrae.org/technical-resources/ashrae-handbook" target="_blank" rel="noopener">🔗 Buka ASHRAE Handbook →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🎓 Coursera — University of London</div>
+          <div class="ri-title">Control of Mobile Robots / Introduction to Control Theory</div>
+          <div class="ri-desc">Kursus online sistem kontrol dengan simulasi interaktif. Cocok sebagai pemula PID control dengan visualisasi yang baik tentang P, I, D actions.</div>
+          <a href="https://www.coursera.org/learn/mobile-robot" target="_blank" rel="noopener">🔗 Buka di Coursera →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🎓 IIR — International Institute of Refrigeration (Paris)</div>
+          <div class="ri-title">Refrigeration Guide — Fundamentals of Marine Refrigeration</div>
+          <div class="ri-desc">Publikasi resmi IIR tentang prinsip refrigerasi untuk aplikasi maritim, termasuk sistem kontrol dan regulasi IMO yang berlaku.</div>
+          <a href="https://iifiir.org/en/publications" target="_blank" rel="noopener">🔗 Buka Publikasi IIR →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🏫 BPSDM Perhubungan Indonesia — Lokal</div>
+          <div class="ri-title">Modul Diklat Kepelautan: Permesinan Bantu dan Sistem Pendingin Kapal</div>
+          <div class="ri-desc">Modul resmi BPSDM (Badan Pengembangan SDM Perhubungan) Indonesia untuk materi kepelautan, mencakup refrigerasi kapal dan sistem kontrolnya sesuai standar STCW.</div>
+          <a href="https://bpsdm.dephub.go.id" target="_blank" rel="noopener">🔗 Buka BPSDM Dephub →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">📖 Textbook Referensi</div>
+          <div class="ri-title">Refrigeration and Air Conditioning — Stoecker & Jones (McGraw-Hill)</div>
+          <div class="ri-desc">Textbook klasik yang membahas sistem refrigerasi dan HVAC secara komprehensif termasuk analisis siklus, komponen, kontrol, dan troubleshooting. Banyak digunakan di program teknik maritim.</div>
+          <a href="https://scholar.google.com/scholar?q=Stoecker+Jones+refrigeration+air+conditioning" target="_blank" rel="noopener">🔗 Cari di Google Scholar →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: REFERENSI CASE STUDY ══ -->
+<div class="modal-overlay" id="modal-ref-case" onclick="closeModalOutside(event,'modal-ref-case')">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div class="m-tag">📚 Referensi Troubleshooting</div>
+        <h3>Studi Kasus & Troubleshooting — Sumber Belajar</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-ref-case')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Referensi untuk troubleshooting sistem kontrol refrigerasi dan HVAC di kapal, mencakup panduan teknis, standar keselamatan, dan prosedur commissioning resmi.</p>
+      <div class="ref-list">
+        <div class="ref-item">
+          <div class="ri-src">🚢 IMO — International Maritime Organization</div>
+          <div class="ri-title">SOLAS Chapter II-1 & MSC Circular — Machinery & Refrigeration Safety</div>
+          <div class="ri-desc">Peraturan SOLAS yang mengatur sistem refrigerasi kapal, persyaratan keselamatan, alarm system, dan kualifikasi engineer untuk menangani refrigerant. Dokumen wajib untuk Marine Engineer.</div>
+          <a href="https://www.imo.org/en/KnowledgeCentre/Pages/Default.aspx" target="_blank" rel="noopener">🔗 Buka IMO Knowledge Centre →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🔧 Danfoss Technical Documents</div>
+          <div class="ri-title">TXV & EEV Service Manuals — Expansion Valve Troubleshooting Guide</div>
+          <div class="ri-desc">Panduan teknis resmi dari Danfoss tentang cara setting, troubleshooting, dan mengganti TXV/EEV. Mencakup prosedur superheat setting, hunting diagnosis, dan commissioning guide dengan nilai parameter spesifik.</div>
+          <a href="https://www.danfoss.com/en/service-and-support/downloads/" target="_blank" rel="noopener">🔗 Danfoss Technical Downloads →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🔧 Carel Industries — EEV Controller Documentation</div>
+          <div class="ri-title">IR33 & MPXPRO Controller Manual — PID Tuning for EEV</div>
+          <div class="ri-desc">Manual resmi controller Carel yang digunakan luas di sistem refrigerasi kapal. Menjelaskan cara setting PID parameter untuk EEV, kalibrasi sensor, dan procedure troubleshooting alarm.</div>
+          <a href="https://www.carel.com/documents" target="_blank" rel="noopener">🔗 Buka Carel Documents →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🎓 Refrigeration Technologies — UK</div>
+          <div class="ri-title">Marine Refrigeration Course — MCA Approved Training Material</div>
+          <div class="ri-desc">Materi training MCA (Maritime and Coastguard Agency) UK untuk Marine Engineer tentang sistem refrigerasi kapal, termasuk sistem kontrol, troubleshooting, dan prosedur keselamatan penanganan refrigerant F-Gas.</div>
+          <a href="https://www.refrigerationtechnologies.co.uk" target="_blank" rel="noopener">🔗 Buka Refrigeration Technologies →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">🏫 Politeknik Pelayaran Surabaya — Indonesia</div>
+          <div class="ri-title">Modul Ajar: Sistem Refrigerasi dan HVAC Kapal — Rafael Sukirno, CE</div>
+          <div class="ri-desc">Modul pembelajaran vokasi maritim yang dikembangkan untuk Program D-III dan D-IV Teknika Politeknik Pelayaran Surabaya, mengintegrasikan teori termodinamika, sistem kontrol, dan praktik troubleshooting sesuai standar STCW 2010 Amended Manila 2010.</div>
+          <a href="https://polpel-sby.ac.id" target="_blank" rel="noopener">🔗 Buka Polpel Surabaya →</a>
+        </div>
+        <div class="ref-item">
+          <div class="ri-src">📖 YouTube — HVAC School (USA)</div>
+          <div class="ri-title">Superheat & Subcooling Explained — Practical Troubleshooting Videos</div>
+          <div class="ri-desc">Channel YouTube teknis terpercaya dengan video penjelasan cara mengukur superheat, subcooling, dan troubleshooting TXV/EEV secara visual. Sangat cocok sebagai materi visual pendamping modul ini.</div>
+          <a href="https://www.youtube.com/@HVACSchool" target="_blank" rel="noopener">🔗 Buka HVAC School Channel →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Mobile nav ──
+document.querySelectorAll('.sidenav-link').forEach(l => l.addEventListener('click', () => {
+  document.getElementById('sidenav').classList.remove('open');
+}));
+
+// ── Tabs ──
+function switchTab(group, id, btn) {
+  document.querySelectorAll('[id^="' + group + '-"]').forEach(p => p.classList.remove('active'));
+  document.getElementById(group + '-' + id).classList.add('active');
+  btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Accordion ──
+function toggleAccordion(hdr) {
+  const item = hdr.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.acc-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ── Scroll animations ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('[data-anim]').forEach((el, i) => {
+  el.style.transitionDelay = (i % 5) * 0.07 + 's';
+  obs.observe(el);
+});
+
+// ── Active sidebar nav ──
+const sectionIds = ['home','overview','refrigcycle','components','electrical','control','hvac','pid','protection','casestudy','glossary'];
+const navLinks = document.querySelectorAll('.sidenav-link');
+const sObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+    }
+  });
+}, { rootMargin: '-35% 0px -55% 0px' });
+sectionIds.forEach(id => { const el = document.getElementById(id); if (el) sObs.observe(el); });
+
+// ── PID Simulator ──
+const canvas = document.getElementById('pidCanvas');
+const ctx = canvas.getContext('2d');
+let simData = { pv:[], out:[] };
+let simT = 0;
+let pvCurrent = 0; // starts at 0°C (room temp), target –18°C
+let integral = 0;
+let prevError = 0;
+let disturbance = 0;
+let animId;
+
+function getParams() {
+  const kp = parseFloat(document.getElementById('kpSlider').value);
+  const ki = parseFloat(document.getElementById('kiSlider').value);
+  const kd = parseFloat(document.getElementById('kdSlider').value);
+  document.getElementById('kpVal').textContent = kp.toFixed(1);
+  document.getElementById('kiVal').textContent = ki.toFixed(2);
+  document.getElementById('kdVal').textContent = kd.toFixed(1);
+  return { kp, ki, kd };
+}
+
+function resetSim() {
+  cancelAnimationFrame(animId);
+  simData = { pv:[], out:[] };
+  simT = 0; pvCurrent = 0; integral = 0; prevError = 0; disturbance = 0;
+  getParams();
+  runSim();
+}
+
+function addDisturbance() {
+  disturbance = 8; // +8°C sudden load
+}
+
+function updatePID() { getParams(); }
+
+function runSim() {
+  const SP = -18;
+  const dt = 0.1;
+  const maxPts = Math.floor(canvas.offsetWidth / 2) || 300;
+
+  function step() {
+    const { kp, ki, kd } = getParams();
+    const error = SP - pvCurrent;
+    integral += error * dt;
+    integral = Math.max(-20, Math.min(20, integral)); // anti-windup
+    const derivative = (error - prevError) / dt;
+    let output = kp * error + ki * integral + kd * derivative;
+    output = Math.max(0, Math.min(100, output));
+    prevError = error;
+
+    // Plant model: first-order with disturbance
+    const cooling = (output / 100) * 3.5; // max cooling rate
+    const ambient = 0.02; // heat leak from environment
+    pvCurrent += (-cooling + ambient + disturbance * 0.05) * dt;
+    disturbance = Math.max(0, disturbance - 0.3);
+
+    simData.pv.push(pvCurrent);
+    simData.out.push(output);
+    if (simData.pv.length > maxPts) { simData.pv.shift(); simData.out.shift(); }
+
+    drawChart();
+    simT += dt;
+
+    // status
+    const err = Math.abs(SP - pvCurrent);
+    const statusEl = document.getElementById('pidStatus');
+    if (err < 0.5) {
+      statusEl.style.color = '#00e676';
+      statusEl.textContent = `Status: STABLE ✓  PV=${pvCurrent.toFixed(1)}°C  Out=${output.toFixed(0)}%`;
+    } else {
+      statusEl.style.color = '#7cb3cc';
+      statusEl.textContent = `Status: Controlling...  PV=${pvCurrent.toFixed(1)}°C  Err=${error.toFixed(1)}  Out=${output.toFixed(0)}%`;
+    }
+
+    animId = requestAnimationFrame(step);
+  }
+  step();
+}
+
+function drawChart() {
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let i=0; i<6; i++) {
+    const y = (i/5)*H;
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+  for (let i=0; i<8; i++) {
+    const x = (i/7)*W;
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+
+  const n = simData.pv.length;
+  if (n < 2) return;
+  const minV = -30, maxV = 10;
+  const range = maxV - minV;
+
+  function toY(v) { return H - ((v - minV) / range) * H; }
+
+  // Setpoint line
+  const spY = toY(-18);
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(0, spY); ctx.lineTo(W, spY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // PV line
+  ctx.strokeStyle = '#00c8e8';
+  ctx.lineWidth = 2;
+  ctx.shadowColor = '#00c8e8';
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  simData.pv.forEach((v, i) => {
+    const x = (i / (n-1)) * W;
+    const y = toY(v);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Output line (scaled to temp range)
+  ctx.strokeStyle = 'rgba(255,179,0,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  simData.out.forEach((v, i) => {
+    const x = (i / (n-1)) * W;
+    const scaled = minV + (v/100) * range;
+    const y = toY(scaled);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillText('0°C', 4, toY(0)-3);
+  ctx.fillText('–18°C SP', 4, spY-4);
+  ctx.fillText('–30°C', 4, toY(-28));
+}
+
+window.addEventListener('resize', () => { if (simData.pv.length) drawChart(); });
+resetSim();
+
+// ── MODAL ──
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e, id) {
+  if (e.target === document.getElementById('modal-' + id)) closeModal(id);
+}
+</script>
+</body>
+</html>
